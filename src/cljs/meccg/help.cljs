@@ -46,6 +46,7 @@
                         [:li [:code "/adv-counter n"] " - set advancement counters on a card to n (player's own cards only). Deprecated in favor of " [:code "/counter ad n"]]
                         [:li [:code "/bp n"] " - Set your bad publicity to n"]
                         [:li [:code "/card-info"] " - display debug info about a card (player's own cards only)"]
+                        [:li [:code "/clear-win"] " - requests game to clear the current win state.  Requires both players to request it"]
                         [:li [:code "/click n"] " - Set your clicks to n"]
                         [:li [:code "/close-prompt"] " - close an active prompt and show the next waiting prompt, or the core click actions"]
                         [:li [:code "/counter n"] " - set counters on a card to n (player's own cards only). Attempts to infer the type of counter to place. If the inference fails, you must use the next command to specify the counter type."]
@@ -161,11 +162,11 @@
                               [:li "None - statistics are neither logged or displayed"]]]
                             [:p "What do the game statistics mean?"
                              [:ul
-                              [:li "Games Started - games you have entered. The same is used for deck stats."]
+                              [:li "Games Started - games you have entered."]
                               [:li "Games Completed - games that had a winner, or games that did not complete but opponent dropped first."]
                               [:li "Games Incomplete -  games with no winner where you dropped first, and did not concede."]
-                              [:li "Games Won - games won.  The percentage is compared to those games lost.  The same is used for deck stats."]
-                              [:li "Games Lost - games lost.  The percentage is compared to those games won. The same is used for deck stats."]]]
+                              [:li "Games Won - games won.  The percentage is compared to those games lost."]
+                              [:li "Games Lost - games lost.  The percentage is compared to those games won."]]]
                             [:p "Your game completion rate is visible in the player lobby so people can determine if they should play against you."
                              " Don't quit during games - please concede if you have to leave."])}
             )}
