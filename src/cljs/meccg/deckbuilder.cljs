@@ -460,14 +460,6 @@
     (om/set-state! owner :deck-edit text)
     (om/set-state! owner [:deck :cards] cards)))
 
-(defn handle-edit-t [owner]
-  (let [text (.-value (om/get-node owner "hazard-edit"))
-        side (om/get-state owner [:deck :identity :Alignment])
-        cards (parse-deck-string side text)]
-    (om/set-state! owner :deck-edit text)
-    (om/set-state! owner [:deck :cards] cards)))
-
-
 (defn wizard-edit [owner]
   (if (om/get-state owner :vs-wizard)
     (om/set-state! owner :vs-wizard false)
@@ -610,7 +602,7 @@
              (when restricted restricted-span)
              (when rotated rotated-span)]))))
 
-(defn deck-influence-html
+(defn influence-html
   "Returns hiccup-ready vector with dots colored appropriately to deck's influence."
   [deck]
   (dots-html influence-dot (influence-map deck)))
@@ -642,7 +634,7 @@
                    "legal" "Tournament legal"
                    "casual" "Casual play only"
                    "invalid" "Invalid")]
-     [:span.deck-status.shift-tooltip {:class status} message
+     [:span.deck-status {:class status} message
       (when tooltip?
         [:div.status-tooltip.blue-shade
          [:div {:class (if valid "legal" "invalid")}
@@ -769,17 +761,17 @@
            modqty (if (is-prof-prog? deck card) (- qty 1) qty)]
        [:span
         [:span {:class (cond
-                         (and valid released) "fake-link"
+                         (and valid released (not banned)) "fake-link"
                          valid "casual"
                          :else "invalid")
-                :on-mouse-enter #(put! zoom-channel card)
+                :on-mouse-enter #(put! zoom-channel line)
                 :on-mouse-leave #(put! zoom-channel false)} name]
         (card-influence-html card modqty infaction allied)])
      card)])
 
 (defn- create-identity
   [state target-value]
-  (let [side (get-in state [:deck :identity :side])
+  (let [side (get-in state [:deck :identity :Alignment])
         json-map (.parse js/JSON (.. target-value -target -value))
         id-map (js->clj json-map :keywordize-keys true)
         card (lookup side id-map)]
@@ -789,7 +781,7 @@
 
 (defn- identity-option-string
   [card]
-  (.stringify js/JSON (clj->js {:title (:title card) :id (:code card) :art (:art card)})))
+  (.stringify js/JSON (clj->js {:NameEN (:NameEN card) :id (:code card) :art (:art card)})))
 
 (defn deck-builder
   "Make the deckbuilder view"
@@ -837,34 +829,31 @@
     om/IRenderState
     (render-state [this state]
       (sab/html
-       [:div
-        [:div.deckbuilder.blue-shade.panel
-         [:div.viewport {:ref "viewport"}
-          [:div.decks
-           [:div.button-bar
+        [:div
+         [:div.deckbuilder.blue-shade.panel
+          [:div.viewport {:ref "viewport"}
+           [:div.decks
+            [:div.button-bar
              [:button {:on-click #(new-deck "Hero" owner)} "New Wizard deck"]
              [:button {:on-click #(new-deck "Minion" owner)} "New Minion deck"]
              [:button {:on-click #(new-deck "Balrog" owner)} "New Balrog deck"]
              [:button {:on-click #(new-deck "Fallen-wizard" owner)} "New Fallen deck"]
              [:button {:on-click #(new-deck "Elf-lord" owner)} "New Elf deck"]
              [:button {:on-click #(new-deck "Dwarf-lord" owner)} "New Dwarf deck"]]
-           [:div.deck-collection
-              (om/build deck-collection {:sets sets :decks decks :decks-loaded decks-loaded :active-deck (om/get-state owner :deck)})]
-           [:div {:class (when (:edit state) "edit")}
-            (when-let [line (om/get-state owner :zoom)]
-              (let [art (:art line)
-                    id (:id line)
-                    updated-card (add-params-to-card (:card line) id art)]
-              (om/build card-view updated-card)))]]
+            [:div.deck-collection
+             (om/build deck-collection {:sets sets :decks decks :decks-loaded decks-loaded :active-deck (om/get-state owner :deck)})]
+            [:div {:class (when (:edit state) "edit")}
+             (when-let [card (om/get-state owner :zoom)]
+               (om/build card-view card))]]
 
-          [:div.decklist
-           (when-let [deck (:deck state)]
-             (let [identity (:identity deck)
-                   cards (:cards deck)
-                   edit? (:edit state)
-                   delete? (:delete state)]
-               [:div
-                (cond
+           [:div.decklist
+            (when-let [deck (:deck state)]
+              (let [identity (:identity deck)
+                    cards (:cards deck)
+                    edit? (:edit state)
+                    delete? (:delete state)]
+                [:div
+                 (cond
                    edit? [:div.button-bar
                           [:button {:on-click #(save-deck cursor owner)} "Save"]
                           [:button {:on-click #(cancel-edit owner)} "Cancel"]
@@ -884,57 +873,53 @@
                    delete? [:div.button-bar
                             [:button {:on-click #(handle-delete cursor owner)} "Confirm Delete"]
                             [:button {:on-click #(end-delete owner)} "Cancel"]]
-                  :else [:div.button-bar
-                         [:button {:on-click #(edit-deck owner)} "Edit"]
-                         [:button {:on-click #(delete-deck owner)} "Delete"]
-                         (when (and (:stats deck) (not= "none" (get-in @app-state [:options :deckstats])))
-                           [:button {:on-click #(clear-deck-stats cursor owner)} "Clear Stats"])])
-                [:h3 (:name deck)]
-                [:div.header
-                 [:img {:src (image-url identity)}]
-                 [:h4 {:class (if (released? (:sets @app-state) identity) "fake-link" "casual")
-                       :on-mouse-enter #(put! zoom-channel {:card identity :art (:art identity) :id (:id identity)})
-                       :on-mouse-leave #(put! zoom-channel false)}
-                  (:title identity)
-                  (if (banned? identity)
-                    banned-span
-                    (when (:rotated identity) rotated-span))]
-                 (let [count (card-count cards)
-                       min-count (min-deck-size identity)]
-                   [:div count " cards"
-                    (when (< count min-count)
-                      [:span.invalid (str " (minimum " min-count ")")])])
-                 (let [inf (influence-count deck)
-                       id-limit (id-inf-limit identity)]
-                   [:div "Influence: "
-                    ;; we don't use valid? and mwl-legal? functions here, since it concerns influence only
-                    [:span {:class (if (> inf id-limit) (if (> inf id-limit) "invalid" "casual") "legal")} inf]
-                    "/" (if (= INFINITY id-limit) "∞" id-limit)
-                    (if (pos? inf)
-                      (list " " (deck-influence-html deck)))])
-                 (when (= (:Alignment identity) "Corp")
-                   (let [min-point (min-agenda-points deck)
-                         points (agenda-points deck)]
-                     [:div "Agenda points: " points
-                      (when (< points min-point)
-                        [:span.invalid " (minimum " min-point ")"])
-                      (when (> points (inc min-point))
-                        [:span.invalid " (maximum " (inc min-point) ")"])]))
-                 [:div (deck-status-span sets deck true true)]]
-                [:div.cards
-                 (for [group (sort-by first (group-by #(get-in % [:card :type]) cards))]
-                   [:div.group
-                    [:h4 (str (or (first group) "Unknown") " (" (card-count (last group)) ")") ]
-                    (for [line (sort-by #(get-in % [:card :title]) (last group))]
-                      [:div.line
-                       (when (:edit state)
-                         (let [ch (om/get-state owner :edit-channel)]
-                           [:span
-                            [:button.small {:on-click #(put! ch {:qty 1 :card (:card line)})
-                                            :type "button"} "+"]
-                            [:button.small {:on-click #(put! ch {:qty -1 :card (:card line)})
-                                            :type "button"} "-"]]))
-                       (line-span sets deck line)])])]]))]
+                   :else [:div.button-bar
+                          [:button {:on-click #(edit-deck owner)} "Edit"]
+                          [:button {:on-click #(delete-deck owner)} "Delete"]])
+                 [:h3 (:name deck)]
+                 [:div.header
+                  [:img {:src (image-url identity)}]
+                  [:h4 {:class (if (released? (:sets @app-state) identity) "fake-link" "casual")
+                        :on-mouse-enter #(put! zoom-channel identity)
+                        :on-mouse-leave #(put! zoom-channel false)} (:NameEN identity)]
+                  (let [count (card-count cards)
+                        min-count (min-deck-size identity)]
+                    [:div count " cards"
+                     (when (< count min-count)
+                       [:span.invalid (str " (minimum " min-count ")")])])
+                  (let [inf (influence-count deck)
+                        mwl (universalinf-count deck)
+                        total (+ mwl inf)
+                        id-limit (id-inf-limit identity)]
+                    [:div "Influence: "
+                     ;; we don't use valid? and mwl-legal? functions here, since it concerns influence only
+                     [:span {:class (if (> total id-limit) (if (> inf id-limit) "invalid" "casual") "legal")} total]
+                     "/" (if (= INFINITY id-limit) "∞" id-limit)
+                     (if (pos? total)
+                       (list " " (influence-html deck) (restricted-html deck)))])
+                  (when (= (:Alignment identity) "Corp")
+                    (let [min-point (min-agenda-points deck)
+                          points (agenda-points deck)]
+                      [:div "Agenda points: " points
+                       (when (< points min-point)
+                         [:span.invalid " (minimum " min-point ")"])
+                       (when (> points (inc min-point))
+                         [:span.invalid " (maximum " (inc min-point) ")"])]))
+                  [:div (deck-status-span sets deck true true)]]
+                 [:div.cards
+                  (for [group (sort-by first (group-by #(get-in % [:card :type]) cards))]
+                    [:div.group
+                     [:h4 (str (or (first group) "Unknown") " (" (card-count (last group)) ")") ]
+                     (for [line (sort-by #(get-in % [:card :NameEN]) (last group))]
+                       [:div.line
+                        (when (:edit state)
+                          (let [ch (om/get-state owner :edit-channel)]
+                            [:span
+                             [:button.small {:on-click #(put! ch {:qty 1 :card (:card line)})
+                                             :type "button"} "+"]
+                             [:button.small {:on-click #(put! ch {:qty -1 :card (:card line)})
+                                             :type "button"} "-"]]))
+                        (line-span sets deck line)])])]]))]
 
            [:div.deckedit
             [:div
@@ -960,22 +945,22 @@
                [:span.small "(Type or paste)" ]]
               ]
 
-            [:textarea.txttop {:ref "resource-edit" :value (:resource-edit state)
-                        :on-change #(handle-edit owner)}]
-            [:textarea.txttop {:ref "pool-edit" :value (:pool-edit state)
-                        :on-change #(handle-edit-t owner)}]
-            [:div
-             [:h3.lftlabel "Sideboard"
-              [:span.small "(Type or paste)" ]]
-             [:h3.rgtlabel "Pool"
-              [:span.small "(Type or paste)" ]]
-             ]
+             [:textarea.txttop {:ref "resource-edit" :value (:resource-edit state)
+                                :on-change #(handle-edit owner)}]
+             [:textarea.txttop {:ref "pool-edit" :value (:pool-edit state)
+                                :on-change #(handle-edit-t owner)}]
+             [:div
+              [:h3.lftlabel "Sideboard"
+               [:span.small "(Type or paste)" ]]
+              [:h3.rgtlabel "Pool"
+               [:span.small "(Type or paste)" ]]
+              ]
 
-            [:textarea.txtbot {:ref "hazard-edit" :value (:hazard-edit state)
-                               :on-change #(handle-edit-t owner)}]
-            [:textarea.txtbot {:ref "sideboard-edit" :value (:sideboard-edit state)
-                               :on-change #(handle-edit-t owner)}]
-            ]]]]]))))
+             [:textarea.txtbot {:ref "hazard-edit" :value (:hazard-edit state)
+                                :on-change #(handle-edit-t owner)}]
+             [:textarea.txtbot {:ref "sideboard-edit" :value (:sideboard-edit state)
+                                :on-change #(handle-edit-t owner)}]
+             ]]]]]))))
 
 (go (let [cards (<! cards-channel)
           decks (process-decks (:json (<! (GET (str "/data/decks")))))]
