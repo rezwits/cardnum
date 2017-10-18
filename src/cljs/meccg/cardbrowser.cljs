@@ -36,6 +36,11 @@
 (defn image-url [card]
   (str "/img/cards/" (:Set card) "/" (:ImageName card))) ;;had ".png"
 
+(defn insert-alt-arts
+  "Add copies of all alt art cards to the list of cards"
+  [cards]
+  (reduce meccg.deckbuilder/expand-alts () (reverse cards)))
+
 (defn add-symbols [card-text]
   (-> (if (nil? card-text) "" card-text)
       (make-span "Automatic-attacks" "img/dc/me_aa.png")
@@ -169,6 +174,7 @@
            (card-text card)
            (when-let [url (image-url card)]
              [:img {:src url
+                    :title (str (:setname card) (when (:art card) (str " [" (meccg.account/alt-art-name (:art card)) "]")))
                     :onClick #(do (.preventDefault %)
                                   (put! (:pub-chan (om/get-shared owner))
                                         {:topic :card-selected :data card})
@@ -233,14 +239,9 @@
   (if (empty? query)
     cards
     (let [lcquery (.toLowerCase query)]
-      (filter #(or (not= (.indexOf (.toLowerCase (:title %)) lcquery) -1)
+      (filter #(or (not= (.indexOf (.toLowerCase (:NameEN %)) lcquery) -1)
                    (not= (.indexOf (:normalizedtitle %) lcquery) -1))
               cards))))
-
-(defn match [query cards]
-  (if (empty? query)
-    cards
-    (filter #(if (= (.indexOf (str/strip-accents (.toLowerCase (:NameEN %))) query) -1) false true) cards)))
 
 (defn sort-field [fieldname]
   (case fieldname
@@ -339,7 +340,7 @@
                               (filter-cards (:primary-filter state) :Primary)
                               (filter-cards (:alignment-filter state) :Alignment)
                               (filter-cards (:secondary-filter state) :Secondary)
-                              (match (str/strip-accents (.toLowerCase (:search-query state))))
+                              (filter-title (str/strip-accents (.toLowerCase (:search-query state))))
                               ;;(match (:search-query state))
                               (sort-by (sort-field (:sort-field state)))
                               (take (* (:page state) 28))))
