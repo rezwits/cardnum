@@ -42,26 +42,12 @@
   [identity]
   (if (is-draft-id? identity) INFINITY (:influencelimit identity)))
 
-(defn not-alternate [card]
-  (if (= (:Set card) "Alternates")
-    (some #(and (not= (:Set %) "Alternates")
-                (= (:NameEN %) (:NameEN card))
-                %)
-          (:cards @app-state))
-    card))
-
 (defn card-count [cards]
   (reduce #(+ %1 (:qty %2)) 0 cards))
 
 (defn noinfcost? [identity card]
   (or (= (:faction card) (:faction identity))
       (= 0 (:factioncost card)) (= INFINITY (id-inf-limit identity))))
-
-(defn alt-art?
-  "Removes alt-art cards from the search if user is not :special"
-  [card]
-  (or (get-in @app-state [:user :special])
-      (not= "Alternates" (:Set card))))
 
 (defn take-best-card
   "Returns a non-rotated card from the list of cards or a random rotated card from the list"
@@ -80,7 +66,7 @@
   [side card]
   (let [q (str/strip-accents (.toLowerCase (:NameEN card)))
         id (:id card)
-        cards (filter #(and (= (:Alignment %) side) (alt-art? %))
+        cards (filter #(= (:Alignment %) side)
                       (:cards @app-state))
         exact-matches (filter-exact-title q cards)]
     (cond (and id
@@ -261,10 +247,9 @@
 (defn side-identities [side]
   (let [cards
         (->> (:cards @app-state)
-             (filter #(and (= (:Alignment %) side)
-                           (= (:Secondary %) "Avatar")
-                           (alt-art? %)))
-             (filter #(not (contains? %1 :replaced_by))))
+          (filter #(and (= (:Alignment %) side)
+                        (= (:Secondary %) "Avatar")))
+          (filter #(not (contains? %1 :replaced_by))))
         all-titles (map :NameEN cards)
         add-deck (partial add-deck-name all-titles)]
     (->> cards

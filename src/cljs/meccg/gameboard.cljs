@@ -341,8 +341,7 @@
           [:span item])))))
 
 (defn get-non-alt-art [[title cards]]
-  (let [s (sort-by #(= (:setname %) "Alternates") cards)]
-    {:title title :code (:code (first s))}))
+  {:title title :code (:code (first cards))})
 
 (defn prepare-cards []
   (->> (:cards @app-state)
@@ -403,14 +402,27 @@
 
 (defn log-pane [cursor owner]
   (reify
+    ;; om/IInitState
+    ;; (init-state [this] {:scrolling false})
+
     om/IDidUpdate
     (did-update [this prev-props prev-state]
       (let [div (om/get-node owner "msg-list")
+            ;; curr-msg-count (count (:log cursor))
+            ;; prev-msg-count (count (:log prev-props))
             scrolltop (.-scrollTop div)
             height (.-scrollHeight div)]
         (when (or (zero? scrolltop)
                   (< (- height scrolltop (.height (js/$ ".gameboard .log"))) 500))
           (aset div "scrollTop" height))))
+        ;;     is-scrolled (om/get-state owner :scrolling)
+        ;;     scroll-top (.-scrollTop div)
+        ;;     scroll-height (.-scrollHeight div)]
+        ;; (when (or (and (zero? scroll-top)
+        ;;                (not is-scrolled))
+        ;;           (and (not= curr-msg-count prev-msg-count)
+        ;;                (not is-scrolled)))
+        ;;   (aset div "scrollTop" scroll-height))))
 
     om/IDidMount
     (did-mount [this]
@@ -422,6 +434,12 @@
        [:div.log {:on-mouse-over #(card-preview-mouse-over % zoom-channel)
                   :on-mouse-out  #(card-preview-mouse-out % zoom-channel)}
         [:div.panel.blue-shade.messages {:ref "msg-list"}
+                                         ;; :on-scroll #(let [currElt (.-currentTarget %)
+                                         ;;                   scroll-top (.-scrollTop currElt)
+                                         ;;                   scroll-height (.-scrollHeight currElt)
+                                         ;;                   client-height (.-clientHeight currElt)
+                                         ;;                   scrolling (< (+ scroll-top client-height) scroll-height)]
+                                         ;;               (om/set-state! owner :scrolling scrolling))}
          (for [msg (:log cursor)]
            (when-not (and (= (:user msg) "__system__") (= (:text msg) "typing"))
              (if (= (:user msg) "__system__")
@@ -877,17 +895,25 @@
                    (str total " cards, " (- total face-up) " face-down."))]]
         (for [c discard] (draw-card c))]]))))
 
-(defn rfg-view [{:keys [cards name] :as cursor}]
+(defn rfg-view [{:keys [cards name popup] :as cursor} owner]
   (om/component
    (sab/html
     (when-not (empty? cards)
       (let [size (count cards)]
-        [:div.panel.blue-shade.rfg {:class (when (> size 2) "squeeze")}
+        [:div.panel.blue-shade.rfg {:class (when (> size 2) "squeeze")
+                                    :on-click (when popup #(-> (om/get-node owner "rfg-popup") js/$ .fadeToggle))}
          (map-indexed (fn [i card]
                         [:div.card-wrapper {:style {:left (* (/ 128 size) i)}}
                          [:div (om/build card-view card)]])
                       cards)
-         (om/build label cards {:opts {:name name}})])))))
+         (om/build label cards {:opts {:name name}})
+
+         (when popup
+           [:div.panel.blue-shade.popup {:ref "rfg-popup" :class "opponent"}
+            [:div
+             [:a {:on-click #(close-popup % owner "rfg-popup" nil false false)} "Close"]
+             [:label (str size " cards.")]]
+            (for [c cards] (om/build card-view c))])])))))
 
 (defn play-area-view [{:keys [name player] :as cursor}]
   (om/component
@@ -1308,12 +1334,12 @@
 
               [:div.right-inner-leftpane
                [:div
-                (om/build rfg-view {:cards (:rfg opponent) :name "Removed from the game"})
-                (om/build rfg-view {:cards (:rfg me) :name "Removed from the game"})
+                (om/build rfg-view {:cards (:rfg opponent) :name "Removed from the game" :popup true})
+                (om/build rfg-view {:cards (:rfg me) :name "Removed from the game" :popup true})
                 (om/build play-area-view {:player opponent :name "Temporary Zone"})
                 (om/build play-area-view {:player me :name "Temporary Zone"})
-                (om/build rfg-view {:cards (:current opponent) :name "Current"})
-                (om/build rfg-view {:cards (:current me) :name "Current"})]
+                (om/build rfg-view {:cards (:current opponent) :name "Current" :popup false})
+                (om/build rfg-view {:cards (:current me) :name "Current" :popup false})]
                (when-not (= side :spectator)
                  (om/build button-pane {:side side :active-player active-player :run run :end-turn end-turn :runner-phase-12 runner-phase-12 :corp-phase-12 corp-phase-12 :corp corp :runner runner :me me :opponent opponent}))]]
 
