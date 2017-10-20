@@ -238,10 +238,7 @@
 (defn filter-title [query cards]
   (if (empty? query)
     cards
-    (let [lcquery (.toLowerCase query)]
-      (filter #(or (not= (.indexOf (.toLowerCase (:NameEN %)) lcquery) -1)
-                   (not= (.indexOf (:normalizedtitle %) lcquery) -1))
-              cards))))
+    (filter #(if (= (.indexOf (str/strip-accents (.toLowerCase (:NameEN %))) query) -1) false true) cards)))
 
 (defn sort-field [fieldname]
   (case fieldname

@@ -744,10 +744,10 @@
     []
     (let [cards (->> (:cards @app-state)
                      (filter #(and (allowed? % identity)
-                                   (not= "Special" (:Set %))
-                                   (alt-art? %)))
+                                   (not= "Special" (:Set %))))
                      (distinct-by :NameEN))]
-      (take 10 (filter #(not= (.indexOf (str/strip-accents (.toLowerCase (:NameEN %))) (str/strip-accents(.toLowerCase query))) -1) cards)))))
+      (take 10 (filter #(not= (.indexOf (str/strip-accents (.toLowerCase (:NameEN %)))
+                                        (str/strip-accents(.toLowerCase query))) -1) cards)))))
 
 (defn handle-keydown [owner event]
   (let [selected (om/get-state owner :selected)
