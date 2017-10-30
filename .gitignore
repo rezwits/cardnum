@@ -19,6 +19,6 @@ pom.xml
 /resources/public/lib/
 /resources/public/css/
 /resources/public/img/cards
-/data/andb-*.json
+/data/meccg-*.json
 /data/img
 /.lein-failures
