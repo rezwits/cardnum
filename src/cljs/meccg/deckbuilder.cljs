@@ -35,7 +35,7 @@
   "Check if ID is The Professor and card is a Program"
   [deck card]
   (and (= "03029" (get-in deck [:identity :code]))
-       (= "Program" (:type card))))
+       (= "Program" (:Secondary card))))
 
 (defn id-inf-limit
   "Returns influence limit of an identity or INFINITY in case of draft IDs."
@@ -189,7 +189,7 @@
   [card {:keys [side faction code] :as identity}]
   (and (not= (:Secondary card) "Avatar")
        (= (:side card) side)
-       (or (not= (:type card) "Agenda")
+       (or (not= (:Secondary card) "Agenda")
            (= (:faction card) "Neutral")
            (= (:faction card) faction)
            (is-draft-id? identity))
@@ -306,13 +306,13 @@
       "10109")                                              ; Ibrahim Salem
     (default-alliance-is-free? cards line)
     "10018"                                                 ; Mumba Temple
-    (>= 15 (card-count (filter #(= "ICE" (:type (:card %))) cards)))
+    (>= 15 (card-count (filter #(= "ICE" (:Secondary (:card %))) cards)))
     "10019"                                                 ; Museum of History
     (<= 50 (card-count cards))
     "10038"                                                 ; PAD Factory
     (= 3 (card-count (filter #(= "PAD Campaign" (:title (:card %))) cards)))
     "10076"                                                 ; Mumbad Virtual Tour
-    (<= 7 (card-count (filter #(= "Asset" (:type (:card %))) cards)))
+    (<= 7 (card-count (filter #(= "Asset" (:Secondary (:card %))) cards)))
     ;; Not an alliance card
     false))
 
@@ -529,10 +529,10 @@
     (om/set-state! owner [:deck :cards] cards)))
 
 (defn handle-edit-t [owner]
-  (let [text (.-value (om/get-node owner "deck-edit"))
+  (let [text (.-value (om/get-node owner "deck-edit2"))
         side (om/get-state owner [:deck :identity :side])
         cards (parse-deck-string side text)]
-    (om/set-state! owner :deck-edit text)
+    (om/set-state! owner :deck-edit2 text)
     (om/set-state! owner [:deck :cards] cards)))
 
 (defn wizard-edit [owner]
@@ -921,9 +921,11 @@
                 (let [new-qty (+ (or (:qty existing-line) 0) (:qty edit))
                       rest (remove match? cards)
                       draft-id (is-draft-id? (om/get-state owner [:deck :identity]))
-                      new-cards (cond (and (not draft-id) (> new-qty max-qty)) (conj rest {:qty max-qty :card card})
+                      new-cards (cond (and (not draft-id) (> new-qty max-qty))
+                                      (conj rest (assoc existing-line :qty max-qty))
                                       (<= new-qty 0) rest
-                                      :else (conj rest {:qty new-qty :card card}))]
+                                      (empty? existing-line) (conj rest {:qty new-qty :card card})
+                                      :else (conj rest (assoc existing-line :qty new-qty)))]
                   (om/set-state! owner [:deck :cards] new-cards))
                 (deck->str owner)))))
       (go (while true
@@ -944,10 +946,15 @@
              [:button {:on-click #(new-deck "Elf-lord" owner)} "New Elf deck"]
              [:button {:on-click #(new-deck "Dwarf-lord" owner)} "New Dwarf deck"]]
             [:div.deck-collection
-             (om/build deck-collection {:sets sets :decks decks :decks-loaded decks-loaded :active-deck (om/get-state owner :deck)})]
+             (when-not (:edit state)
+               (om/build deck-collection {:sets sets :decks decks :decks-loaded decks-loaded :active-deck (om/get-state owner :deck)}))
+             ]
             [:div {:class (when (:edit state) "edit")}
-             (when-let [card (om/get-state owner :zoom)]
-               (om/build card-view card))]]
+             (when-let [line (om/get-state owner :zoom)]
+               (let [art (:art line)
+                     id (:id line)
+                     updated-card (add-params-to-card (:card line) id art)]
+                 (om/build card-view updated-card {:state {:cursor cursor}})))]]
 
            [:div.decklist
             (when-let [deck (:deck state)]
@@ -985,8 +992,12 @@
                  [:div.header
                   [:img {:src (image-url identity)}]
                   [:h4 {:class (if (released? (:sets @app-state) identity) "fake-link" "casual")
-                        :on-mouse-enter #(put! zoom-channel identity)
-                        :on-mouse-leave #(put! zoom-channel false)} (:title identity)]
+                        :on-mouse-enter #(put! zoom-channel {:card identity :art (:art identity) :id (:id identity)})
+                        :on-mouse-leave #(put! zoom-channel false)}
+                   (:title identity)
+                   (if (banned? identity)
+                     banned-span
+                     (when (:rotated identity) rotated-span))]
                   (let [count (card-count cards)
                         min-count (min-deck-size identity)]
                     [:div count " cards"
@@ -1010,7 +1021,7 @@
                          [:span.invalid " (maximum " (inc min-point) ")"])]))
                   [:div (deck-status-span sets deck true true)]]
                  [:div.cards
-                  (for [group (sort-by first (group-by #(get-in % [:card :type]) cards))]
+                  (for [group (sort-by first (group-by #(get-in % [:card :Primary]) cards))]
                     [:div.group
                      [:h4 (str (or (first group) "Unknown") " (" (card-count (last group)) ")") ]
                      (for [line (sort-by #(get-in % [:card :title]) (last group))]
@@ -1048,7 +1059,7 @@
                [:span.small "(Type or paste)" ]]
               ]
 
-             [:textarea.txttop {:ref "resource-edit" :value (:resource-edit state)
+             [:textarea.txttop {:ref "deck-edit" :value (:deck-edit state)
                                 :on-change #(handle-edit owner)}]
              [:textarea.txttop {:ref "pool-edit" :value (:pool-edit state)
                                 :on-change #(handle-edit-t owner)}]

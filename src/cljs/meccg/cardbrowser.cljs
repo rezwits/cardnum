@@ -235,6 +235,11 @@
     cards
     (filter #(= (field %) filter-value) cards)))
 
+(defn filter-rotated [should-filter cards]
+  (if should-filter
+    (filter-cards false :rotated cards)
+    cards))
+
 (defn filter-title [query cards]
   (if (empty? query)
     cards
