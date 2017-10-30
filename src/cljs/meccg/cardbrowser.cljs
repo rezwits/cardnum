@@ -34,7 +34,7 @@
     (get-in @app-state [:user :special] false)))
 
 (defn image-url [card]
-  (str "/img/cards/" (:Set card) "/" (:ImageName card))) ;;had ".png"
+  (str "/img/cards/" (:setname card) "/" (:ImageName card))) ;;had ".png"
 
 (defn insert-alt-arts
   "Add copies of all alt art cards to the list of cards"
@@ -117,7 +117,7 @@
   "Generate text html representation a card"
   [card]
   [:div
-   [:h4 (:NameEN card)]
+   [:h4 (:title card)]
    (when-let [memory (:memoryunits card)]
      (if (< memory 3)
        [:div.anr-icon {:class (str "mu" memory)} ""]
@@ -159,7 +159,7 @@
                                                            (add-symbols
                                                              (add-symbols
                                                                (add-symbols
-                                                   (:Text card)))))))))))))}}]]
+                                                   (:text card)))))))))))))}}]]
    ])
 
 (defn card-view [card owner]
@@ -238,16 +238,16 @@
 (defn filter-title [query cards]
   (if (empty? query)
     cards
-    (filter #(if (= (.indexOf (str/strip-accents (.toLowerCase (:NameEN %))) query) -1) false true) cards)))
+    (filter #(if (= (.indexOf (str/strip-accents (.toLowerCase (:title %))) query) -1) false true) cards)))
 
 (defn sort-field [fieldname]
   (case fieldname
-    "Set" #((into {} (map-indexed (fn [i e] [e i]) set-order)) (:Set %))
-    "Name" (juxt :NameEN #((into {} (map-indexed (fn [i e] [e i]) set-order)) (:Set %)))
-    "Primary" (juxt #((into {} (map-indexed (fn [i e] [e i]) set-order)) (:Set %))
+    "Set" #((into {} (map-indexed (fn [i e] [e i]) set-order)) (:setname %))
+    "Name" (juxt :title #((into {} (map-indexed (fn [i e] [e i]) set-order)) (:setname %)))
+    "Primary" (juxt #((into {} (map-indexed (fn [i e] [e i]) set-order)) (:setname %))
                     #((into {} (map-indexed (fn [i e] [e i]) primary-order)) (:Primary %)))
-    "Alignment" (juxt #((into {} (map-indexed (fn [i e] [e i]) set-order)) (:Set %))
-                      #((into {} (map-indexed (fn [i e] [e i]) (concat general-alignments ["Neutral"]))) (:Alignment %)))))
+    "Alignment" (juxt #((into {} (map-indexed (fn [i e] [e i]) set-order)) (:setname %))
+                      #((into {} (map-indexed (fn [i e] [e i]) (concat general-alignments ["Neutral"]))) (:side %)))))
 
 (defn handle-scroll [e owner {:keys [page]}]
   (let [$cardlist (js/$ ".card-list")
@@ -256,7 +256,7 @@
       (om/update-state! owner :page inc))))
 
 (defn handle-search [e owner]
-  (doseq [filter [:set-filter :secondary-filter :sort-filter :alignment-filter]]
+  (doseq [filter [:set-filter :secondary-filter :sort-filter :side-filter]]
     (om/set-state! owner filter "All"))
   (om/set-state! owner :search-query (.. e -target -value)))
 
@@ -268,7 +268,7 @@
        :sort-field "Set"
        :set-filter "All"
        :primary-filter "All"
-       :alignment-filter "All"
+       :side-filter "All"
        :secondary-filter "All"
        :page 1
        :filter-ch (chan)})
@@ -293,7 +293,7 @@
                [:span.e.search-clear {:dangerouslySetInnerHTML #js {:__html "&#xe819;"}
                                       :on-click #(om/set-state! owner :search-query "")}])
              [:input.search {:on-change #(handle-search % owner)
-                             :NameEN "text" :placeholder "Search cards" :value query}]])
+                             :title "text" :placeholder "Search cards" :value query}]])
           [:div
            [:h4 "Sort by"]
            [:select {:value (:sort-filter state)
@@ -311,7 +311,7 @@
                                                   (sort-by (juxt :position)
                                                            sets-list-all))]
                           ["Primary" :primary-filter ["Character" "Resource" "Hazard" "Site" "Region"]]
-                          ["Alignment" :alignment-filter (alignments (:primary-filter state))]
+                          ["Alignment" :side-filter (alignments (:primary-filter state))]
                           ["Secondary" :secondary-filter (secondaries (:primary-filter state))]]]
               [:div
                [:h4 (first filter)]
@@ -331,11 +331,11 @@
                              cards (if (= s "All")
                                      (:cards cursor)
                                      (if (= (.indexOf (:set-filter state) "Set") -1)
-                                       (filter #(= (:Set %) s) (:cards cursor))
+                                       (filter #(= (:setname %) s) (:cards cursor))
                                        (filter #(list-sets (:position %)) (:cards cursor))))]
                          (->> cards
                               (filter-cards (:primary-filter state) :Primary)
-                              (filter-cards (:alignment-filter state) :Alignment)
+                              (filter-cards (:side-filter state) :side)
                               (filter-cards (:secondary-filter state) :Secondary)
                               (filter-title (str/strip-accents (.toLowerCase (:search-query state))))
                               ;;(match (:search-query state))

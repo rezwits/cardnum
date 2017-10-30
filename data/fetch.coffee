@@ -90,26 +90,26 @@ banFields = {
   "effectedAlignment" : same
   "uneffectedAlignment" : same
   "swapableAlignment" : same
-  "Set" : same #
+  "Set" : same
 }
 
 mapBans = {}
 
 cardFields = {
-  "Set": same,
+  "Set": rename("setname"),
   "Primary": same,
-  "Alignment": same,
+  "Alignment": rename("side"),
   "MEID": same,
   "Artist": same,
   "Rarity": same,
   "Precise": same,
-  "NameEN": same,
+  "NameEN": rename("title"),
   "NameFR": same,
   "NameGR": same,
   "NameSP": same,
   "NameJP": same,
   "ImageName": same,
-  "Text": same,
+  "Text": rename("text"),
   "Skill": same,
   "MPs": same,
   "Mind": same,
@@ -190,7 +190,7 @@ fetchCards = (callback) ->
       imgDir = path.join(__dirname, "..", "resources", "public", "img", "cards")
       i = 0
       for card in cards
-        imgPath = path.join(imgDir, "#{card.Set}", "#{card.ImageName}")
+        imgPath = path.join(imgDir, "#{card.setname}", "#{card.ImageName}")
         if !fs.existsSync(imgPath)
           fetchImg((baseurl + card.Set + "/"), card.ImageName, imgPath,  i++ * 200)
       db.collection("cards").remove ->
