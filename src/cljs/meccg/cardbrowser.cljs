@@ -36,11 +36,6 @@
 (defn image-url [card]
   (str "/img/cards/" (:setname card) "/" (:ImageName card))) ;;had ".png"
 
-(defn insert-alt-arts
-  "Add copies of all alt art cards to the list of cards"
-  [cards]
-  (reduce meccg.deckbuilder/expand-alts () (reverse cards)))
-
 (defn add-symbols [card-text]
   (-> (if (nil? card-text) "" card-text)
       (make-span "Automatic-attacks" "img/dc/me_aa.png")
@@ -113,6 +108,21 @@
       (make-span "[s]" "img/dc/me_sl.png")
       (make-span "[w]" "img/dc/me_wi.png")))
 
+(defn selected-alt-art [card cursor]
+  (let [code (keyword (:code card))
+        alt-card (get (:alt-arts @app-state) (name code) nil)
+        selected-alts (:alt-arts (:options cursor))
+        selected-art (keyword (get selected-alts code nil))
+        card-art (:art card)]
+    (and alt-card
+         (cond
+           (= card-art selected-art) true
+           (and (nil? selected-art)
+                (not (keyword? card-art))) true
+           (and (= :default selected-art)
+                (not (keyword? card-art))) true
+           :else false))))
+
 (defn- card-text
   "Generate text html representation a card"
   [card]
@@ -168,19 +178,22 @@
     (init-state [_] {:showText false})
     om/IRenderState
     (render-state [_ state]
-      (sab/html
-        [:div.card-preview.blue-shade
-         (if (:showText state)
-           (card-text card)
-           (when-let [url (image-url card)]
-             [:img {:src url
-                    :title (str (:setname card) (when (:art card) (str " [" (meccg.account/alt-art-name (:art card)) "]")))
-                    :onClick #(do (.preventDefault %)
-                                  (put! (:pub-chan (om/get-shared owner))
-                                        {:topic :card-selected :data card})
-                                  nil)
-                    :onError #(-> (om/set-state! owner {:showText true}))
-                    :onLoad #(-> % .-target js/$ .show)}]))]))))
+      (let [cursor (om/get-state owner :cursor)]
+        (sab/html
+          [:div.card-preview.blue-shade
+           (when (om/get-state owner :decorate-card)
+             {:class (cond (:selected card) "selected"
+                           (selected-alt-art card cursor) "selected-alt")})
+           (if (:showText state)
+             (card-text card)
+             (when-let [url (image-url card)]
+               [:img {:src url
+                      :onClick #(do (.preventDefault %)
+                                    (put! (:pub-chan (om/get-shared owner))
+                                          {:topic :card-selected :data card})
+                                    nil)
+                      :onError #(-> (om/set-state! owner {:showText true}))
+                      :onLoad #(-> % .-target js/$ .show)}]))])))))
 
 (defn card-info-view [card owner]
   (reify
@@ -204,7 +217,7 @@
 (def resource-secondaries ["Ally" "Faction" "Greater Item" "Major Item" "Minor Item" "Special Item"])
 (def shared-secondaries ["Long-event" "Permanent-event" "Permanent-event/Short-event" "Short-event"])
 (def hazard-secondaries ["Creature" "Creature/Permanent-event" "Creature/Short-event"])
-(def general-alignments ["Hero" "Minion" "Balrog" "Fallen-wizard" "Elf-lord" "Dwarf-lord" "Dual"])
+(def general-alignments ["Hero" "Minion" "Balrog" "Lord" "Fallen-wizard" "Elf-lord" "Dwarf-lord" "FW/DL" "Dual"])
 (def set-order ["METW" "METD" "MEDM" "MELE" "MEAS" "MEWH" "MEBA" "MEFB" "MEDF"])
 
 (defn secondaries [primary]
