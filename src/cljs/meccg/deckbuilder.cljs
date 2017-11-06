@@ -272,7 +272,7 @@
 (defn deck->str [owner]
   (let [cards (om/get-state owner [:deck :cards])
         str (reduce #(str %1 (:qty %2) " " (get-in %2 [:card :title]) "\n") "" cards)]
-    (om/set-state! owner :deck-edit str)))
+    (om/set-state! owner :resource-edit str)))
 
 ;;; Helpers for Alliance cards
 (defn is-alliance?
@@ -521,18 +521,32 @@
   (om/set-state! owner :query "")
   (-> owner (om/get-node "viewport") js/$ (.removeClass "edit")))
 
-(defn handle-edit [owner]
-  (let [text (.-value (om/get-node owner "deck-edit"))
+(defn handle-resource-edit [owner]
+  (let [text (.-value (om/get-node owner "resource-edit"))
         side (om/get-state owner [:deck :identity :side])
         cards (parse-deck-string side text)]
-    (om/set-state! owner :deck-edit text)
+    (om/set-state! owner :resource-edit text)
     (om/set-state! owner [:deck :cards] cards)))
 
-(defn handle-edit-t [owner]
-  (let [text (.-value (om/get-node owner "deck-edit2"))
+(defn handle-pool-edit [owner]
+  (let [text (.-value (om/get-node owner "pool-edit"))
         side (om/get-state owner [:deck :identity :side])
         cards (parse-deck-string side text)]
-    (om/set-state! owner :deck-edit2 text)
+    (om/set-state! owner pool-edit text)
+    (om/set-state! owner [:deck :cards] cards)))
+
+(defn handle-hazard-edit [owner]
+  (let [text (.-value (om/get-node owner "hazard-edit"))
+        side (om/get-state owner [:deck :identity :side])
+        cards (parse-deck-string side text)]
+    (om/set-state! owner hazard-edit text)
+    (om/set-state! owner [:deck :cards] cards)))
+
+(defn handle-sideboard-edit [owner]
+  (let [text (.-value (om/get-node owner "sideboard-edit"))
+        side (om/get-state owner [:deck :identity :side])
+        cards (parse-deck-string side text)]
+    (om/set-state! owner sideboard-edit text)
     (om/set-state! owner [:deck :cards] cards)))
 
 (defn wizard-edit [owner]
@@ -899,10 +913,10 @@
        :old-deck nil
        :edit-channel (chan)
        :deck nil
-       :pool nil
        :resources nil
        :hazards nil
        :sideboard nil
+       :pool nil
        })
 
     om/IWillMount
@@ -1059,10 +1073,10 @@
                [:span.small "(Type or paste)" ]]
               ]
 
-             [:textarea.txttop {:ref "deck-edit" :value (:deck-edit state)
-                                :on-change #(handle-edit owner)}]
+             [:textarea.txttop {:ref "resource-edit" :value (:resource-edit state)
+                                :on-change #(handle-resource-edit owner)}]
              [:textarea.txttop {:ref "pool-edit" :value (:pool-edit state)
-                                :on-change #(handle-edit-t owner)}]
+                                :on-change #(handle-pool-edit owner)}]
              [:div
               [:h3.lftlabel "Sideboard"
                [:span.small "(Type or paste)" ]]
@@ -1071,9 +1085,9 @@
               ]
 
              [:textarea.txtbot {:ref "hazard-edit" :value (:hazard-edit state)
-                                :on-change #(handle-edit-t owner)}]
+                                :on-change #(handle-hazard-edit owner)}]
              [:textarea.txtbot {:ref "sideboard-edit" :value (:sideboard-edit state)
-                                :on-change #(handle-edit-t owner)}]
+                                :on-change #(handle-sideboard-edit owner)}]
              ]]]]]))))
 
 (go (let [cards (<! cards-channel)

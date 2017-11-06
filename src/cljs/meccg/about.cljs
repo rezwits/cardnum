@@ -47,7 +47,7 @@
         [:li d])]
      [:h3 "Disclaimer"]
      [:p "Middle-earth CCG and LotR are trademarks of Middle-earth Enterprises and/or Iron Crown Enterprises."]
-     [:p "This is website is not affiliated with Middle-earth Enterprises or Iron Crown Enterprises."]
+     [:p "This website is not affiliated with Middle-earth Enterprises or Iron Crown Enterprises."]
      [:p "Targeting icon made by "
       [:a {:href "http://www.freepik.com" :title "Freepik" :target "_blank"} "Freepik"]
       " from "
