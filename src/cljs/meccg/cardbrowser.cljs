@@ -18,7 +18,7 @@
          ]
       (swap! app-state assoc :sets sets)))
 
-(go (let [cards (sort-by :code (:json (<! (GET "/data/cards"))))]
+(go (let [cards (sort-by :title (:json (<! (GET "/data/cards"))))]
       (swap! app-state assoc :cards cards)
       (swap! app-state assoc :cards-loaded true)
       (put! cards-channel cards)))
@@ -359,7 +359,7 @@
                               ;;(match (:search-query state))
                               (sort-by (sort-field (:sort-field state)))
                               (take (* (:page state) 28))))
-                       {:key :code})]]))))
+                       {:key :imageName})]]))))
 
 (om/root card-browser
          app-state

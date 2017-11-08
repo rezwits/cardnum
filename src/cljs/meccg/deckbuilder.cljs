@@ -70,8 +70,8 @@
                       (:cards @app-state))
         exact-matches (filter-exact-title q cards)]
     (cond (and id
-               (first (filter #(= id (:code %)) cards)))
-          (first (filter #(= id (:code %)) cards))
+               (first (filter #(= id (:imageName %)) cards)))
+          (first (filter #(= id (:imageName %)) cards))
           (not-empty exact-matches) (take-best-card exact-matches)
           :else
           (loop [i 2 matches cards]
@@ -271,7 +271,7 @@
 
 (defn deck->str [owner]
   (let [cards (om/get-state owner [:deck :cards])
-        str (reduce #(str %1 (:qty %2) " " (get-in %2 [:card :title]) "\n") "" cards)]
+        str (reduce #(str %1 (:qty %2) " " (get-in %2 [:card :title]) (insert-params %2) "\n") "" cards)]
     (om/set-state! owner :resource-edit str)))
 
 ;;; Helpers for Alliance cards
