@@ -2483,12 +2483,12 @@
               [:div.inner-leftpane
                [:div.left-inner-leftpane
                 [:div
-                 (om/build stats-view opponent)
                  (om/build scored-view opponent)
+                 (om/build stats-view opponent)
                  ]
                 [:div
-                 (om/build scored-view me)
-                 (om/build stats-view me)]
+                 (om/build stats-view me)
+                 (om/build scored-view me)]
                 ]
 
                [:div.right-inner-leftpane
