@@ -774,7 +774,6 @@
    {:qty 1 :card "Cairn of the Colruh Hazurbal" :id "[H] (SL)"}
    {:qty 1 :card "Calembel" :id "[H] (WR)"}
    {:qty 1 :card "Cameth Brin" :id "[H] (TW)"}
-   {:qty 1 :card "Kanatrass" :id "[H] (NW)"}
    {:qty 1 :card "Caras Amarth" :id "[H] (FB)"}
    {:qty 1 :card "Carn Dûm" :id "[H] (TW)"}
    {:qty 1 :card "Cave of the Urdharkonur" :id "[H] (GW)"}
@@ -867,6 +866,7 @@
    {:qty 1 :card "Kadar an-Khâradun" :id "[H] (DS)"}
    {:qty 1 :card "Kala Dulakurth" :id "[H] (ML)"}
    {:qty 1 :card "Kala-Ogurk" :id "[H] (BO)"}
+   {:qty 1 :card "Kanatrass" :id "[H] (NW)"}
    {:qty 1 :card "Khibil Ephalak" :id "[H] (SL)"}
    {:qty 1 :card "Khorsâj" :id "[H] (SL)"}
    {:qty 1 :card "Killing Fields" :id "[H] (SL)"}
@@ -885,7 +885,7 @@
    {:qty 1 :card "Leiri" :id "[H] (NW)"}
    {:qty 1 :card "Lighthouse at Kraken Cape" :id "[H] (SL)"}
    {:qty 1 :card "Ligr Wodaize Berne" :id "[H] (NW)"}
-   {:qty 1 :card "Lind-or-Burum" :id "[H] (TI)"}
+   {:qty 1 :card "Lind-or-Burúm" :id "[H] (TI)"}
    {:qty 1 :card "Linhir" :id "[H] (WR)"}
    {:qty 1 :card "Linnarthurras" :id "[H] (NW)"}
    {:qty 1 :card "Litash" :id "[H] (NW)"}
@@ -1159,7 +1159,6 @@
    {:qty 1 :card "Cairn of the Colruh Hazurbal" :id "[M] (SL)"}
    {:qty 1 :card "Calembel" :id "[M] (WR)"}
    {:qty 1 :card "Cameth Brin" :id "[M] (LE)"}
-   {:qty 1 :card "Kanatrass" :id "[M] (NW)"}
    {:qty 1 :card "Caras Amarth" :id "[M] (FB)"}
    {:qty 1 :card "Cave of the Urdharkonur" :id "[M] (GW)"}
    {:qty 1 :card "Caves of Ûlund" :id "[M] (LE)"}
@@ -1236,6 +1235,7 @@
    {:qty 1 :card "Jääkylät" :id "[M] (NW)"}
    {:qty 1 :card "Joghul's Shrine" :id "[M] (CP)"}
    {:qty 1 :card "Kadar an-Khâradun" :id "[M] (DS)"}
+   {:qty 1 :card "Kanatrass" :id "[M] (NW)"}
    {:qty 1 :card "Khibil Ephalak" :id "[M] (SL)"}
    {:qty 1 :card "Khorsâj" :id "[M] (SL)"}
    {:qty 1 :card "Killing Fields" :id "[M] (SL)"}
@@ -1252,7 +1252,7 @@
    {:qty 1 :card "Leiri" :id "[M] (NW)"}
    {:qty 1 :card "Lighthouse at Kraken Cape" :id "[M] (SL)"}
    {:qty 1 :card "Ligr Wodaize Berne" :id "[M] (NW)"}
-   {:qty 1 :card "Lind-or-Burum" :id "[M] (TI)"}
+   {:qty 1 :card "Lind-or-Burúm" :id "[M] (TI)"}
    {:qty 1 :card "Linhir" :id "[M] (WR)"}
    {:qty 1 :card "Linnarthurras" :id "[M] (NW)"}
    {:qty 1 :card "Logath Camp" :id "[M] (CP)"}
@@ -1472,7 +1472,6 @@
    {:qty 1 :card "Cairn of the Colruh Hazurbal" :id "[M] (SL)"}
    {:qty 1 :card "Calembel" :id "[M] (WR)"}
    {:qty 1 :card "Cameth Brin" :id "[M] (LE)"}
-   {:qty 1 :card "Kanatrass" :id "[M] (NW)"}
    {:qty 1 :card "Caras Amarth" :id "[M] (FB)"}
    {:qty 1 :card "Cave of the Urdharkonur" :id "[M] (GW)"}
    {:qty 1 :card "Caves of Ûlund" :id "[M] (LE)"}
@@ -1564,6 +1563,7 @@
    {:qty 1 :card "Kadar an-Khâradun" :id "[M] (DS)"}
    {:qty 1 :card "Kala Dulakurth" :id "[M] (ML)"}
    {:qty 1 :card "Kala-Ogurk" :id "[M] (BO)"}
+   {:qty 1 :card "Kanatrass" :id "[M] (NW)"}
    {:qty 1 :card "Khibil Ephalak" :id "[M] (SL)"}
    {:qty 1 :card "Khorsâj" :id "[M] (SL)"}
    {:qty 1 :card "Killing Fields" :id "[M] (SL)"}
@@ -1582,7 +1582,7 @@
    {:qty 1 :card "Leiri" :id "[M] (NW)"}
    {:qty 1 :card "Lighthouse at Kraken Cape" :id "[M] (SL)"}
    {:qty 1 :card "Ligr Wodaize Berne" :id "[M] (NW)"}
-   {:qty 1 :card "Lind-or-Burum" :id "[M] (TI)"}
+   {:qty 1 :card "Lind-or-Burúm" :id "[M] (TI)"}
    {:qty 1 :card "Linhir" :id "[M] (WR)"}
    {:qty 1 :card "Linnarthurras" :id "[M] (NW)"}
    {:qty 1 :card "Litash" :id "[M] (NW)"}
