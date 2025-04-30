@@ -1971,7 +1971,8 @@
    {:qty 1 :card "The Cobalt-deeps" :id "(ML)"}
    {:qty 1 :card "The Ghost-caves" :id "(KN)"}
    {:qty 1 :card "The Lava-deeps" :id "(CP)"}
-   {:qty 1 :card "The Limestone-caverns" :id "(BO)"}])
+   {:qty 1 :card "The Limestone-caverns" :id "(BO)"}
+   {:qty 1 :card "Wreck of the Thoroval" :id "(NW)"}])
 
 (def dreamcard-dragon
   [{:qty 1 :card "Amaru" :id "[B] (CA)"}
