@@ -652,8 +652,8 @@
    {:qty 3 :card "Minheldolath" :id "(NW)"}
    {:qty 3 :card "Mirëdor" :id "(DS)"}
    {:qty 3 :card "Mirror of Fire" :id "(SL)"}
-   {:qty 3 :card "Misty Mountains - Northern Spur" :id "(GW)"}
-   {:qty 3 :card "Misty Mountains - Southern Spur" :id "(TI)"}
+   {:qty 3 :card "Misty Mountains - Northern Spur" :id "(DF)"}
+   {:qty 3 :card "Misty Mountains - Southern Spur" :id "(DF)"}
    {:qty 3 :card "Mouths of the Anduin" :id "(TW)"}
    {:qty 3 :card "Mûlambur" :id "(CA)"}
    {:qty 3 :card "Mûmakan" :id "(CA)"}
