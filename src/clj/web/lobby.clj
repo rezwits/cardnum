@@ -514,14 +514,14 @@
                                   (= (get-in d [:identity :alignment]) "Hero") standard-wizard-sites
                                   (= (get-in d [:identity :alignment]) "Minion") standard-minion-sites
                                   (= (get-in d [:identity :alignment]) "Fallen-wizard") standard-fallen-sites
-                                  (= (get-in d [:identity :alignment]) "Balrog") standard-minion-sites)
+                                  (= (get-in d [:identity :alignment]) "Balrog") standard-balrog-sites)
                                 (and (= "standard" status) (= option true)) standard-option-sites
                                 (and (= "dreamcard" status) (= option false))
                                 (cond
                                   (= (get-in d [:identity :alignment]) "Hero") dreamcard-wizard-sites
                                   (= (get-in d [:identity :alignment]) "Minion") dreamcard-minion-sites
                                   (= (get-in d [:identity :alignment]) "Fallen-wizard") dreamcard-fallen-sites
-                                  (= (get-in d [:identity :alignment]) "Balrog") dreamcard-minion-sites
+                                  (= (get-in d [:identity :alignment]) "Balrog") dreamcard-balrog-sites
                                   (= (get-in d [:identity :alignment]) "Elf-lord") dreamcard-elf-sites
                                   (= (get-in d [:identity :alignment]) "Dwarf-lord") dreamcard-dwarf-sites
                                   (= (get-in d [:identity :alignment]) "Atani-lord") dreamcard-atani-sites

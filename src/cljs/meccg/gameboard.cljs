@@ -677,6 +677,19 @@
     (put! channel false))
   nil)
 
+(defn keep-direct-focused! []
+  (let [el (js/document.querySelector ".direct")]
+    (when el
+      ;; Immediately focus
+      (.focus el)
+      ;; Re-focus if blurred
+      (.addEventListener el "blur"
+                         (fn [_]
+                           (js/setTimeout
+                            #(when (js/document.body.contains el)
+                              (.focus el))
+                            0))))))
+
 (defn log-pane [cursor owner]
   (reify
     ;; om/IInitState
@@ -701,9 +714,12 @@
     ;;                (not is-scrolled)))
     ;;   (aset div "scrollTop" scroll-height))))
 
-    om/IDidMount
-    (did-mount [this]
-      (-> ".log" js/$ (.resizable #js {:handles "w"})))
+   om/IDidMount
+   (did-mount [this]
+              ;; Allow resizing
+              (-> ".log" js/$ (.resizable #js {:handles "w"}))
+              ;; Enforce persistent focus
+              (js/setTimeout keep-direct-focused! 0))
 
     om/IRenderState
     (render-state [this state]
@@ -1286,7 +1302,6 @@
           (send-command "view-location" {:region region :dc true})
           (send-command "view-location" {:region region :dc false})
           ))))
-
 
 (defn show-map [event owner ref]
   (-> (om/get-node owner (str ref "-content")) js/$ .fadeIn)
@@ -2395,7 +2410,7 @@
       ;(update-audio cursor owner)
       )
 
-    om/IRenderState
+   om/IRenderState
     (render-state [this state]
       (sab/html
         (when side
@@ -2405,7 +2420,14 @@
             [:div.gameboard
              (when (and (:winner @game-state) (not (:win-shown @app-state)))
                (build-win-box game-state))
-             [:div {:class (:background (:options @app-state))}]
+             [:div {:class (:background (:options @app-state))
+                    :style {:position "absolute"
+                            :top 0
+                            :left 0
+                            :width "100%"
+                            :height "100%"
+                            :z-index -1}
+                    :on-mouse-down #(.preventDefault %)}]
              [:div.rightpane
               [:div.card-zoom
                (if-let [card (om/get-state owner :zoom)]
