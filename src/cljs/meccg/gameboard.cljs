@@ -310,7 +310,7 @@
                  (or tapped inverted rotated))
           (cons "untap" %) %))
       (#(if (and (some (partial = set_code) ["MENE" "MEWR" "MENW" "MEML" "MEMM"
-                                             "MERS" "MESL" "MEGW" "MEKN" ])
+                                             "MERS" "METI" "MESL" "MEGW" "MEKN" ])
                  (some (partial = Secondary) ["Permanent-event"])
                  (boolean (re-find #"flip" Home))
                  (#{"rig" "onhost"} (first zone)))
