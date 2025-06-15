@@ -290,22 +290,22 @@
 
 (def primary-order ["Character" "Resource" "Hazard" "Site" "Region"])
 (def resource-secondaries ["Ally" "Avatar" "Faction" "Greater Item" "Major Item" "Minor Item" "Gold Ring Item" "Special Item"])
-(def site-secondaries ["Under-deeps" "Greater Item" "Major Item" "Minor Item" "Gold Ring Item" "Information" "Hoard" "Scroll" "Palantír" "Battle-gear" "Non-battle-gear"])
+(def site-secondaries ["Greater Item" "Major Item" "Minor Item" "Gold Ring Item" "Information" "Hoard" "Scroll" "Palantír" "Battle-gear" "Non-battle-gear"])
 (def shared-secondaries ["Permanent-event" "Short-event" "Long-event" "Permanent-event/Short-event" "Permanent-event/Long-event" "Short-event/Long-event"])
 (def hazard-secondaries ["Creature" "Creature/Permanent-event" "Creature/Short-event" "Creature/Long-event"])
 (def general-alignments ["Hero" "Minion" "Dual" "Balrog" "Fallen-wizard" "Fallen/Lord" "Lord"
                          "Elf-lord" "Dwarf-lord" "Atani-lord" "War-lord" "Dragon-lord" "Grey"])
-(def standard-havens ["Carn Dûm" "Dol Guldur" "Edhellond" "Geann a-Lisch"
+(def standard-havens ["Under-deeps" "Carn Dûm" "Dol Guldur" "Edhellond" "Geann a-Lisch"
                       "Grey Havens" "Lórien" "Minas Morgul" "Rivendell"])
-(def standard-hero-havens ["Edhellond" "Grey Havens" "Lórien" "Rivendell"])
-(def standard-minion-havens ["Carn Dûm" "Dol Guldur" "Geann a-Lisch" "Minas Morgul"])
-(def dreamcard-havens ["Amaru" "Bozisha-Dar" "Carn Dûm" "Chey Goumal" "Dol Guldur"
+(def standard-hero-havens ["Under-deeps" "Edhellond" "Grey Havens" "Lórien" "Rivendell"])
+(def standard-minion-havens ["Under-deeps" "Carn Dûm" "Dol Guldur" "Geann a-Lisch" "Minas Morgul"])
+(def dreamcard-havens ["Under-deeps" "Amaru" "Bozisha-Dar" "Carn Dûm" "Chey Goumal" "Dol Guldur"
                        "Edhellond" "Elanthia" "Evermist" "Geann a-Lisch" "Grey Havens"
                        "Hau Nysrin" "Inyalonî" "Lórien" "Minas Morgul" "Mornost" "Rhûbar"
                        "Rivendell" "Shapôl Udûn" "Taurondë" "Tower of Hargrog" "Valagalen"])
-(def dreamcard-hero-havens ["Edhellond" "Elanthia" "Evermist" "Grey Havens" "Hau Nysrin"
+(def dreamcard-hero-havens ["Under-deeps" "Edhellond" "Elanthia" "Evermist" "Grey Havens" "Hau Nysrin"
                            "Inyalonî" "Lórien" "Rhûbar" "Rivendell" "Taurondë" "Valagalen"])
-(def dreamcard-minion-havens ["Amaru" "Bozisha-Dar" "Carn Dûm" "Chey Goumal" "Dol Guldur"
+(def dreamcard-minion-havens ["Under-deeps" "Amaru" "Bozisha-Dar" "Carn Dûm" "Chey Goumal" "Dol Guldur"
                               "Geann a-Lisch" "Minas Morgul" "Mornost" "Shapôl Udûn" "Tower of Hargrog"])
 (def set-order ["The Wizards" "The Wizards (Unlimited)" "The Dragons" "Dark Minions" "The Lidless Eye" "Against the Shadow" "The White Hand"
                 "The Balrog" "Firstborn" "Durin's Folk" "The Necromancer" "The Northern Waste" "Morgoth's Legacy"
@@ -459,8 +459,6 @@
   (case strict
     "All"
     cards
-    "Under-deeps"
-    (filter-parts "Under-deeps" :RPath cards)
     "Greater Item"
     (filter-cards true :GreaterItem cards)
     "Major Item"
@@ -496,10 +494,12 @@
     ))
 
 (defn filter-haven [haven-filter filter-value cards]
-  (if haven-filter
-    cards
-    (filter-cards filter-value :Haven cards)
-    ))
+  (if (= filter-value "Under-deeps")
+    (filter-parts "Under-deeps" :RPath cards)
+    (if haven-filter
+      cards
+      (filter-cards filter-value :Haven cards)
+      )))
 
 (defn filter-second [site-filter filter-value cards]
   (if site-filter
