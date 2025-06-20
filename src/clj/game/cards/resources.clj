@@ -2368,7 +2368,7 @@
                                                                  kount (count (get-in @state [opp-side :deck]))]
                                                              (loop [k (if (< kount factions) kount factions)]
                                                                (when (> k 0)
-                                                                 (move state side (assoc (first (get-in @state [opp-side :deck])) :swap true) :current)
+                                                                 (move state side (assoc (first (get-in @state [opp-side :deck])) :swap false) :current)
                                                                  (recur (- k 1))))
                                                              (effect-completed state side nil)))} nil nil))
                  :msg (msg " to look at the top of your deck")}
