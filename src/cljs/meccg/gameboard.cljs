@@ -906,14 +906,14 @@
   "Sab image element of a facedown card"
   ([side] (facedown-card side [] nil))
   ([side class-list alt-alt-text]
-   (let [s (.toLowerCase side)
+   (let [s (.toLowerCase (name side)) ; <- FIXED LINE
          alt (if (nil? alt-alt-text)
                (str "Facedown " s " card")
                alt-alt-text)
          tag (->> class-list
                   vec
                   (concat ["img" "card"])
-                  (join ".")
+                  (clojure.string/join ".")
                   keyword)]
      [tag {:src (str "/img/" s ".jpg")
            :alt alt}])))
