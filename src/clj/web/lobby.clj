@@ -142,8 +142,8 @@
       (let [clientids (lobby-clients gameid)]
         (if started
           (do (stats/game-finished game)
-              (ws/broadcast-to! clientids :meccg/timeout (json/generate-string
-                                                               {:gameid gameid})))
+            (ws/broadcast-to! clientids :meccg/timeout (json/generate-string
+                                                        {:gameid gameid})))
           (ws/broadcast-to! clientids :lobby/timeout {:gameid gameid}))
         (doseq [client-id clientids]
           (swap! client-gameids dissoc client-id))
@@ -155,10 +155,10 @@
   [client-id gameid]
   (when-let [{:keys [players started state] :as game} (game-for-id gameid)]
     (cond (player? client-id gameid)
-          (swap! all-games update-in [gameid :players] #(remove-once (fn [p] (= client-id (:ws-id p))) %))
+      (swap! all-games update-in [gameid :players] #(remove-once (fn [p] (= client-id (:ws-id p))) %))
 
-          (spectator? client-id gameid)
-          (swap! all-games update-in [gameid :spectators] #(remove-once (fn [p] (= client-id (:ws-id p))) %)))
+      (spectator? client-id gameid)
+      (swap! all-games update-in [gameid :spectators] #(remove-once (fn [p] (= client-id (:ws-id p))) %)))
 
     ;; update ending-players when someone drops to credit a completion properly.  Not if game is over.
     ; TODO add other player back in if other player rejoins
@@ -209,8 +209,8 @@
   [player]
   (-> player
       (update-in [:side] #(if (= % "Contestant")
-                            "Challenger"
-                            "Contestant"))
+                           "Challenger"
+                           "Contestant"))
       (dissoc :deck)))
 
 (defn blocked-users
@@ -263,8 +263,8 @@
 
     (spit (str "all-pre-g/" username "/" username "'s game.json")
           (json/generate-string
-            game
-            {:pretty true}))
+           game
+           {:pretty true}))
     (swap! all-games assoc gameid game)
     (swap! client-gameids assoc client-id gameid)
     (ws/send! client-id [:lobby/select {:gameid gameid}])
@@ -343,10 +343,10 @@
   (when (player-or-spectator client-id gameid)
     (let [game (game-for-id gameid)]
       (ws/broadcast-to!
-        (map :ws-id (concat (:players game) (:spectators game)))
-        :lobby/message
-        {:user user
-         :text msg}))))
+       (map :ws-id (concat (:players game) (:spectators game)))
+       :lobby/message
+       {:user user
+        :text msg}))))
 
 (defn handle-swap-sides
   [{{{:keys [username] :as user} :user} :ring-req
@@ -380,13 +380,13 @@
                (or (empty? game-password)
                    (bcrypt/check password game-password)))
         (do (join-game user client-id gameid alignment)
-            (ws/broadcast-to! (lobby-clients gameid)
-                              :lobby/message
-                              {:user         "__system__"
-                               :notification "ting"
-                               :text         (str username " joined the game.")})
-            (ws/send! client-id [:lobby/select {:gameid gameid}])
-            (when reply-fn (reply-fn 200)))
+          (ws/broadcast-to! (lobby-clients gameid)
+                            :lobby/message
+                            {:user         "__system__"
+                             :notification "ting"
+                             :text         (str username " joined the game.")})
+          (ws/send! client-id [:lobby/select {:gameid gameid}])
+          (when reply-fn (reply-fn 200)))
         (when reply-fn (reply-fn 403))))
     (when reply-fn (reply-fn 404))))
 
@@ -406,14 +406,14 @@
                      (bcrypt/check password game-password)))
           (do (spectate-game user client-id gameid)
 
-              (ws/broadcast-to! (lobby-clients gameid)
-                                :lobby/message
-                                {:user         "__system__"
-                                 :notification "ting"
-                                 :text         (str username " joined the game as a spectator.")})
-              (ws/send! client-id [:lobby/select {:gameid gameid :started started}])
-              (when reply-fn (reply-fn 200))
-              true)
+            (ws/broadcast-to! (lobby-clients gameid)
+                              :lobby/message
+                              {:user         "__system__"
+                               :notification "ting"
+                               :text         (str username " joined the game as a spectator.")})
+            (ws/send! client-id [:lobby/select {:gameid gameid :started started}])
+            (when reply-fn (reply-fn 200))
+            true)
           (when reply-fn
             (reply-fn 403)
             false))))
@@ -472,83 +472,83 @@
 
         check (as-> (mc/find-one-as-map db "decks" {:_id (object-id deck-id) :username username}) d
 
-                   (map-values d [:resources :hazards :sideboard
-                                  :characters :pool :fwsb]
-                               #(mapv get-code %))
+                    (map-values d [:resources :hazards :sideboard
+                                              :characters :pool :fwsb]
+                                #(mapv get-code %))
 
-                   (map-values d [:resources :hazards :sideboard
-                                  :characters :pool :fwsb]
-                               #(mapv get-data %))
+                    (map-values d [:resources :hazards :sideboard
+                                              :characters :pool :fwsb]
+                                #(mapv get-data %))
 
-                   (map-values d [:resources :hazards :sideboard
-                                  :characters :pool :fwsb]
-                               #(mapv get-swap %))
+                    (map-values d [:resources :hazards :sideboard
+                                              :characters :pool :fwsb]
+                                #(mapv get-swap %))
 
-                   (map-values d [:resources :hazards :sideboard
-                                  :characters :pool :fwsb]
-                               #(mapv rid-code %))
+                    (map-values d [:resources :hazards :sideboard
+                                              :characters :pool :fwsb]
+                                #(mapv rid-code %))
 
-                   (map-values d [:resources :hazards :sideboard
-                                  :characters :pool :fwsb]
-                               #(vec (remove rid-card %)))
+                    (map-values d [:resources :hazards :sideboard
+                                              :characters :pool :fwsb]
+                                #(vec (remove rid-card %)))
 
-                   (update-in d [:identity] #(@all-cards (str (:title %) " " (:trimCode %))))
+                    (update-in d [:identity] #(@all-cards (str (:title %) " " (:trimCode %))))
                     (assoc d :status (decks/calculate-deck-status d))
-                   )
+                    )
 
         deck (as-> (mc/find-one-as-map db "decks" {:_id (object-id deck-id) :username username}) d
                    ;(process-sites d)
                    (assoc d :location
-                            (let [{:keys [status option]} (get-in check [:status])]
+                          (let [{:keys [status option]} (get-in check [:status])]
+                            (cond
+                              (= metws true)
+                              standard-metw-sites-only
+                              (= metds true)
+                              standard-metd-sites-only
+                              (= medms true)
+                              standard-medm-sites-only
+                              (= meass true)
+                              standard-meas-sites-only
+                              (and (= "standard" status) (= option false))
                               (cond
-                                (= metws true)
-                                standard-metw-sites-only
-                                (= metds true)
-                                standard-metd-sites-only
-                                (= medms true)
-                                standard-medm-sites-only
-                                (= meass true)
-                                standard-meas-sites-only
-                                (and (= "standard" status) (= option false))
-                                (cond
-                                  (= (get-in d [:identity :alignment]) "Hero") standard-wizard-sites
-                                  (= (get-in d [:identity :alignment]) "Minion") standard-minion-sites
-                                  (= (get-in d [:identity :alignment]) "Fallen-wizard") standard-fallen-sites
-                                  (= (get-in d [:identity :alignment]) "Balrog") standard-balrog-sites)
-                                (and (= "standard" status) (= option true)) standard-option-sites
-                                (and (= "dreamcard" status) (= option false))
-                                (cond
-                                  (= (get-in d [:identity :alignment]) "Hero") dreamcard-wizard-sites
-                                  (= (get-in d [:identity :alignment]) "Minion") dreamcard-minion-sites
-                                  (= (get-in d [:identity :alignment]) "Fallen-wizard") dreamcard-fallen-sites
-                                  (= (get-in d [:identity :alignment]) "Balrog") dreamcard-balrog-sites
-                                  (= (get-in d [:identity :alignment]) "Elf-lord") dreamcard-elf-sites
-                                  (= (get-in d [:identity :alignment]) "Dwarf-lord") dreamcard-dwarf-sites
-                                  (= (get-in d [:identity :alignment]) "Atani-lord") dreamcard-atani-sites
-                                  (= (get-in d [:identity :alignment]) "Dragon-lord") dreamcard-dragon-sites
-                                  (= (get-in d [:identity :alignment]) "War-lord") dreamcard-warlord-sites)
-                                (and (= "dreamcard" status) (= option true)) dreamcard-option-sites
-                                )
-                              ))
+                                (= (get-in d [:identity :alignment]) "Hero") standard-wizard-sites
+                                (= (get-in d [:identity :alignment]) "Minion") standard-minion-sites
+                                (= (get-in d [:identity :alignment]) "Fallen-wizard") standard-fallen-sites
+                                (= (get-in d [:identity :alignment]) "Balrog") standard-minion-sites)
+                              (and (= "standard" status) (= option true)) standard-option-sites
+                              (and (= "dreamcard" status) (= option false))
+                              (cond
+                                (= (get-in d [:identity :alignment]) "Hero") dreamcard-wizard-sites
+                                (= (get-in d [:identity :alignment]) "Minion") dreamcard-minion-sites
+                                (= (get-in d [:identity :alignment]) "Fallen-wizard") dreamcard-fallen-sites
+                                (= (get-in d [:identity :alignment]) "Balrog") dreamcard-minion-sites
+                                (= (get-in d [:identity :alignment]) "Elf-lord") dreamcard-elf-sites
+                                (= (get-in d [:identity :alignment]) "Dwarf-lord") dreamcard-dwarf-sites
+                                (= (get-in d [:identity :alignment]) "Atani-lord") dreamcard-atani-sites
+                                (= (get-in d [:identity :alignment]) "Dragon-lord") dreamcard-dragon-sites
+                                (= (get-in d [:identity :alignment]) "War-lord") dreamcard-warlord-sites)
+                              (and (= "dreamcard" status) (= option true)) dreamcard-option-sites
+                              )
+                            ))
 
                    (map-values d [:resources :hazards :sideboard
-                                  :characters :pool :fwsb :location]
+                                             :characters :pool :fwsb :location]
                                #(mapv get-code %))
 
                    (map-values d [:resources :hazards :sideboard
-                                  :characters :pool :fwsb :location]
+                                             :characters :pool :fwsb :location]
                                #(mapv get-data %))
 
                    (map-values d [:resources :hazards :sideboard
-                                  :characters :pool :fwsb :location]
+                                             :characters :pool :fwsb :location]
                                #(mapv get-swap %))
 
                    (map-values d [:resources :hazards :sideboard
-                                  :characters :pool :fwsb :location]
+                                             :characters :pool :fwsb :location]
                                #(mapv rid-code %))
 
                    (map-values d [:resources :hazards :sideboard
-                                  :characters :pool :fwsb :location]
+                                             :characters :pool :fwsb :location]
                                #(vec (remove rid-card %)))
 
                    (update-in d [:identity] #(@all-cards (str (:title %) " " (:trimCode %))))
@@ -582,13 +582,13 @@
 
 
 (ws/register-ws-handlers!
-  :chsk/uidport-open handle-ws-connect
-  :lobby/create handle-lobby-create
-  :lobby/delete handle-lobby-delete
-  :lobby/loader handle-lobby-loader
-  :lobby/leave handle-lobby-leave
-  :lobby/join handle-lobby-join
-  :lobby/watch handle-lobby-watch
-  :lobby/say handle-lobby-say
-  :lobby/swap handle-swap-sides
-  :lobby/deck handle-select-deck)
+ :chsk/uidport-open handle-ws-connect
+ :lobby/create handle-lobby-create
+ :lobby/delete handle-lobby-delete
+ :lobby/loader handle-lobby-loader
+ :lobby/leave handle-lobby-leave
+ :lobby/join handle-lobby-join
+ :lobby/watch handle-lobby-watch
+ :lobby/say handle-lobby-say
+ :lobby/swap handle-swap-sides
+ :lobby/deck handle-select-deck)
