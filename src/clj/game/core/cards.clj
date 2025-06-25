@@ -98,9 +98,9 @@
                                (unregister-events state side h)
                                (register-events state side (:events (card-def newh)) newh)
                                newh))
-             hosted (let [hosted-cards (filter some? (:hosted card))]
-                      (when (seq hosted-cards)
-                        (mapv (if same-zone? update-hosted discard-hosted) hosted-cards)))
+             hosted (seq (flatten (map
+                                   (if same-zone? update-hosted discard-hosted)
+                                   (:hosted card))))
              c (if (and (= side :contestant) (= (first dest) :discard) (revealed? card))
                  (assoc card :seen true) card)
              c (if (and (or placed host (#{:locales :scored :current} (first zone)))
