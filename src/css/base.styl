@@ -1897,24 +1897,45 @@ align-radio
     flex(1)
     display-flex()
     flex-direction(column)
+    justify-content space-between
     min-width: 90px
     overflow: auto
 
     .card
-      
       &:hover
         box-shadow: 0px 0px 5px 0px orange
+
+    .contestant-rig.opponent, .challenger-rig.opponent
+      flex(1)
+      order 1
+      display-flex()
+      flex-direction(row)
+      justify-content(flex-start)
+        margin-top: 0px
+        margin-bottom: 0px
+
+      @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm)
+        margin-top: 0px
+        margin-bottom: 0px
+
+    .contestant-rig, challenger-rig
+      flex(1)
+      order 2
+      display-flex()
+      flex-direction(row)
+      justify-content(flex-end)
+        margin-top: 0px
+        margin-bottom: 0px
+
+      @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm)
+        margin-top: 0px
+        margin-bottom: 0px
 
     .contestant-rig, .challenger-rig, contestant-rig.opponent, .challenger-rig.opponent
       flex(1)
       display-flex()
       flex-direction(row)
       justify-content(flex-end)
-      margin-bottom: -125px
-      z-index: 15
-
-      @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm)
-        margin-bottom: -67px
 
       .hosted
         &:nth-child(0)
@@ -2612,6 +2633,36 @@ align-radio
             .counters
               transform(rotate(-90deg))
 
+  .centralpane .board-top {
+    transform: translateY(0px);
+    z-index: 2
+    position: relative
+    }
+  .centralpane .resource-top {
+    transform: translateY(-190px);
+    z-index: 4
+    position: relative
+    }
+  .centralpane .hazard-top {
+    transform: translateY(-180px);
+    z-index: 6
+    position: relative
+    }
+  .centralpane .hazard-bottom {
+    transform: translateY(-120px);
+    z-index: 7
+    position: relative
+    }
+  .centralpane .resource-bottom {
+    transform: translateY(-60px);
+    z-index: 5
+    position: relative
+    }
+  .centralpane .board-bottom {
+    z-index 3
+    position relative
+    margin-top -320px
+    }
 
   .rightpane
     position: relative
