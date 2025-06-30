@@ -21,6 +21,7 @@
 (defonce game-state (atom {}))
 (defonce last-state (atom {}))
 (defonce lock (atom false))
+(defonce board-bottom-boost (atom false))
 
 (defn image-url [{:keys [set_code ImageName dreamcard flip erratum errata] :as card}]
   (if flip
@@ -984,7 +985,13 @@
                               :on-mouse-leave #(put! zoom-channel false)
                               ;:on-key-up #(handle-key-up %)
                               ;:on-key-down #(handle-blindzoom %)
-                              :on-click #(handle-card-click cursor owner)}
+                              :on-click
+                              #(do
+                                (when (and (= (first zone) "locales")
+                                           (= (last zone) "characters"))
+                                  (swap! board-bottom-boost not))
+                                (handle-card-click cursor owner))
+                              }
         (when-let [url (image-url cursor)]
           (if (or (not code) flipped facedown)
             (let [facedown-but-known (or (not (or (not code) flipped facedown))
@@ -2476,12 +2483,15 @@
               (om/build log-pane cursor)]
 
              [:div.centralpane
-              (om/build board-view {:player opponent :run run})
-              (om/build resource-view {:player opponent :run run})
-              (om/build hazard-view {:player opponent :run run})
-              (om/build hazard-view {:player me :run run})
-              (om/build resource-view {:player me :run run})
-              (om/build board-view {:player me :run run})]
+              [:div.board-top (om/build board-view {:player opponent :run run})]
+              [:div.resource-top (om/build resource-view {:player opponent :run run})]
+              [:div.hazard-top (om/build hazard-view {:player opponent :run run})]
+              [:div.hazard-bottom (om/build hazard-view {:player me :run run})]
+              [:div.resource-bottom (om/build resource-view {:player me :run run})]
+              [:div.board-bottom
+               {:style {:z-index (if @board-bottom-boost 70 2)}}
+               (om/build board-view {:player me :run run})]
+              ]
 
              [:div.leftpane
               [:div.opponent

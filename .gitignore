@@ -36,3 +36,5 @@ data/WiredTiger
 data/diagnostic.data
 data/journal
 data/storage.bson
+brun1.sh
+brun2.sh
