@@ -2489,7 +2489,7 @@
               [:div.hazard-bottom (om/build hazard-view {:player me :run run})]
               [:div.resource-bottom (om/build resource-view {:player me :run run})]
               [:div.board-bottom
-               {:style {:z-index (if @board-bottom-boost 70 2)}}
+               {:style {:z-index (if @board-bottom-boost 70 3)}}
                (om/build board-view {:player me :run run})]
               ]
 
