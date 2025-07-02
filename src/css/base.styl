@@ -1932,10 +1932,13 @@ align-radio
         margin-bottom: 0px
 
     .contestant-rig, .challenger-rig, contestant-rig.opponent, .challenger-rig.opponent
-      flex(1)
-      display-flex()
-      flex-direction(row)
-      justify-content(flex-end)
+      display: flex
+      flex-wrap: wrap  // <- THIS enables wrapping!
+      flex-direction: row
+      justify-content: flex-start
+      align-items: flex-start
+      gap: 0px  // optional spacing between cards
+      padding: 0px
 
       .hosted
         &:nth-child(0)
@@ -1955,8 +1958,13 @@ align-radio
           z-index: 1
 
       .card-wrapper
-        margin: 3px 6px
+        margin: 0px 0px
         cursor: pointer
+        width: 64px  // or whatever your card width is
+        height: 88px  // adjust based on your image aspect
+        display: flex
+        flex-direction: column
+        align-items: center
 
         .abilities, .challenger-abilities, .contestant-abilities
           left: 0
@@ -2634,34 +2642,114 @@ align-radio
               transform(rotate(-90deg))
 
   .centralpane .board-top {
-    transform: translateY(0px);
-    z-index: 2
-    position: relative
-    }
-  .centralpane .resource-top {
-    transform: translateY(-190px);
+    margin-bottom: auto
+    margin-right: auto
+    background: #222
     z-index: 6
     position: relative
     }
+
+@-moz-document url-prefix() {
+  .centralpane .resource-top {
+    margin-top: -240px;
+  }
+}
+@-moz-document url-prefix() {
   .centralpane .hazard-top {
-    transform: translateY(-180px);
+    margin-bottom: 0px;
+  }
+}
+@-moz-document url-prefix() {
+  .centralpane .hazard-bottom {
+    margin-bottom: 0px;
+  }
+}
+@-moz-document url-prefix() {
+  .centralpane .resource-bottom {
+    margin-bottom: 120px;
+  }
+}
+
+  .centralpane .resource-top {
+    transform: translateY(-150px)
+    margin-left: auto
+    background: #2a
     z-index: 4
     position: relative
+    width: 450px
+    max-height: 200px
+    min-height: 100px
     }
+
+  .centralpane .resource-top .card {
+        float: left
+        margin: 0px
+        display: inline-block
+        margin: 0px 0px px px
+  }
+
+  .centralpane .hazard-top {
+    transform: translateY(-150px)
+    margin-left: auto
+    background: #d72
+    z-index: 2
+    position: relative
+    width: 450px
+    max-height: 200px
+    min-height: 100px
+    //left: -63px
+    }
+
+  .centralpane .hazard-top .card {
+        float: left
+        margin: 0px
+        display: inline-block
+        margin: 0px 0px px px
+  }
+
   .centralpane .hazard-bottom {
-    transform: translateY(-220px);
-    z-index: 5
+    transform: translateY(-150px)
+    margin-left: auto
+    background: #322
+    z-index: 8
     position: relative
-    }
+    width: 450px
+    max-height: 200px
+    min-height: 100px
+    //right: 63px
+  }
+
+  .centralpane .hazard-bottom .card {
+    float: left
+    margin: 0px
+    display: inline-block
+    margin: 0px 0px px px
+  }
+
   .centralpane .resource-bottom {
-    transform: translateY(-260px);
-    z-index: 7
+    transform: translateY(-150px)
+    margin-left: auto
+    background: #7aa
+    z-index: 10
     position: relative
+    width: 450px
+    max-height: 200px
+    min-height: 100px
+  }
+
+  .centralpane .resource-bottom .card {
+        float: left
+        margin: 0px
+        display: inline-block
+        margin: 0px 0px px px
     }
+
   .centralpane .board-bottom {
-    z-index 3
+    z-index 12
     position relative
-    margin-top -320px
+    margin-right: auto
+    margin-top: -450px
+    background: #776
     }
 
   .rightpane
