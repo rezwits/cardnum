@@ -2644,87 +2644,87 @@ align-radio
   .centralpane .board-top {
     border: 1px solid transparent
     margin-bottom: auto
+//    margin-top: 400px
     margin-right: auto
     z-index: 6
     position: relative
     }
 
-.contestant-rig,
-.challenger-rig,
-.contestant-rig.opponent,
-.challenger-rig.opponent
-  display: flex
-  flex-direction: row-reverse
-  justify-content: flex-end
-
 @-moz-document url-prefix() {
   .centralpane .resource-top {
-    margin-top: -240px;
+    display: flex
+    flex-wrap: wrap
+    direction: rtl
+    transform: translateY(-50px)
   }
 }
 @-moz-document url-prefix() {
   .centralpane .hazard-top {
-    margin-bottom: 0px;
+    display: flex
+    flex-wrap: wrap
+    direction: rtl
+    transform: translateY(-50px)
   }
 }
 @-moz-document url-prefix() {
   .centralpane .hazard-bottom {
-    margin-bottom: 0px;
+    transform: translateY(-50px)
   }
 }
 @-moz-document url-prefix() {
   .centralpane .resource-bottom {
-    margin-bottom: 120px;
+    transform: translateY(-50px)
   }
 }
 
   .centralpane .resource-top {
     border: 1px solid transparent
-    transform: translateY(-150px)
     margin-left: auto
     z-index: 4
     position: relative
-    width: 450px
-    max-height: 200px
+    width: 325px
+    max-height: 320px
     min-height: 100px
-    }
+    margin-bottom: auto;
+    margin-top: -150px;
+  }
 
   .centralpane .resource-top .card {
-        float: right
-        margin: 0px
-        display: inline-block
-        margin: 0px 0px px px
+    float: right
+    margin: 0px
+    display: inline-block
+    margin: 0px 0px px px
   }
 
   .centralpane .hazard-top {
     border: 1px solid transparent
-    transform: translateY(-150px)
     margin-left: auto
     z-index: 2
     position: relative
-    width: 450px
-    max-height: 200px
+    width: 325px
+    max-height: 320px
     min-height: 100px
-    //left: -63px
-    }
+    margin-bottom: auto;
+    //margin-top: 100px;
+  }
 
   .centralpane .hazard-top .card {
-        float: right
-        margin: 0px
-        display: inline-block
-        margin: 0px 0px px px
+    float: right
+    margin: 0px
+    display: inline-block
+    margin: 0px 0px px px
   }
 
   .centralpane .hazard-bottom {
     border: 1px solid transparent
-    transform: translateY(-150px)
     margin-left: auto
     z-index: 8
     position: relative
-    width: 450px
-    max-height: 200px
+    width: 325px
+    max-height: 320px
     min-height: 100px
-    //right: 63px
+    margin-bottom: auto
+//    margin-bottom: 0px;
   }
 
   .centralpane .hazard-bottom .card {
@@ -2736,28 +2736,28 @@ align-radio
 
   .centralpane .resource-bottom {
     border: 1px solid transparent
-    transform: translateY(-150px)
     margin-left: auto
     z-index: 10
     position: relative
-    width: 450px
-    max-height: 200px
+    width: 325px
+    max-height: 320px
     min-height: 100px
+    margin-bottom: 640px
   }
 
   .centralpane .resource-bottom .card {
-        float: right
-        margin: 0px
-        display: inline-block
-        margin: 0px 0px px px
-    }
+    float: right
+    margin: 0px
+    display: inline-block
+    margin: 0px 0px px px
+  }
 
   .centralpane .board-bottom {
     border: 1px solid transparent
     z-index 12
     position relative
     margin-right: auto
-    margin-top: -450px
+    margin-top: -900px
     }
 
   .rightpane
