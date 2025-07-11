@@ -180,6 +180,87 @@
    {:hosting {:req #(and (is-type? % "Character") (revealed? %))}}
    "Foolish Words"
    {:hosting {:req #(and (is-type? % "Character") (revealed? %))}}
+   "Goblin-faces"
+   {:abilities [{:label "Strikes"
+                :effect (req (resolve-ability state side
+                                              {:delayed-completion true
+                                               :player  side
+                                               :prompt  "How Many Succesful Strikes?"
+                                               :choices ["1 Strike" "2 Strikes" "3 Strikes" "4 Strikes"
+                                                         "5 Strikes" "6 Strikes" "7 Strikes" "Cancel"]
+                                               :effect  (req
+                                                         (let [opp-side (if (= side :contestant)
+                                                                          :challenger
+                                                                          :contestant)
+                                                               factions (case target
+                                                                          "Cancel"
+                                                                          0
+                                                                          "1 Strike"
+                                                                          1
+                                                                          "2 Strikes"
+                                                                          2
+                                                                          "3 Strikes"
+                                                                          3
+                                                                          "4 Strikes"
+                                                                          4
+                                                                          "5 Strikes"
+                                                                          5
+                                                                          "6 Strikes"
+                                                                          6
+                                                                          "7 Strikes"
+                                                                          7)
+                                                               kount (count (get-in @state [opp-side :deck]))]
+                                                           (loop [k (if (< kount factions) kount factions)]
+                                                             (when (> k 0)
+                                                               (move state side (assoc (first (get-in @state [opp-side :deck])) :swap true) :current {:front true})
+                                                               (recur (- k 1))))
+                                                           (effect-completed state side nil)))} nil nil))
+                 :msg (msg " look at the top of your deck")}
+                {:label "Putback"
+                 :effect (req
+                          (let [opp-side (if (= side :contestant)
+                                           :challenger
+                                           :contestant)
+                                current-count (count (get-in @state [side :current]))]
+                            (letfn [(putback-loop [k]
+                                                  (when (>= k 0)
+                                                    (resolve-ability
+                                                     state side
+                                                     {:async true
+                                                      :prompt "Click Top, Bottom, Next, or Done"
+                                                      :choices ["Top" "Bottom" "Next" "Done"]
+                                                      :effect (req
+                                                               (case target
+                                                                 "Top"
+                                                                 (do
+                                                                   (move state opp-side
+                                                                         (dissoc (nth (get-in @state [side :current]) k nil) :swap)
+                                                                         :deck {:front true})
+                                                                   (effect-completed state side nil)
+                                                                   (putback-loop (dec k)))
+                                                                 "Bottom"
+                                                                 (do
+                                                                   (move state opp-side
+                                                                         (dissoc (nth (get-in @state [side :current]) k nil) :swap)
+                                                                         :deck)
+                                                                   (effect-completed state side nil)
+                                                                   (putback-loop (dec k)))
+                                                                 "Next"
+                                                                 (do
+                                                                   (let [current-cards (get-in @state [side :current])
+                                                                         top-card (first current-cards)
+                                                                         rest-cards (subvec current-cards 1)]
+                                                                     (when top-card
+                                                                       ;; Rotate top card to bottom
+                                                                       (swap! state assoc-in [side :current] (conj rest-cards top-card)))
+                                                                     (effect-completed state side nil)
+                                                                     (putback-loop k)))
+                                                                 "Done"
+                                                                 (effect-completed state side nil)))}
+                                                     nil nil)))] ; end letfn
+                              (putback-loop (dec current-count)))))
+                 :msg (msg " scatter the top and/or bottom cards of your deck")}
+                ]}
    "Grasping and Ungracious"
    {:hosting {:req #(and (is-type? % "Character") (revealed? %))}}
    "Great Secrets Buried There"
