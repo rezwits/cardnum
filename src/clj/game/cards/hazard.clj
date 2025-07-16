@@ -99,7 +99,7 @@
                  :effect (req (resolve-ability state side
                                                {;:delayed-completion true
                                                 :player  side
-                                                :prompt  "How Many Spawn or Cancel"
+                                                :prompt  "Which Card Left to Right or Cancel"
                                                 :choices ["Card 1" "Card 2" "Card 3" "Card 4"
                                                           "Card 5" "Card 6" "Card 7" "Cancel"]
                                                 :effect  (req

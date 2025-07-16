@@ -1932,13 +1932,6 @@ align-radio
         margin-bottom: 0px
 
     .contestant-rig, .challenger-rig, contestant-rig.opponent, .challenger-rig.opponent
-      display: flex
-      flex-wrap: wrap  // <- THIS enables wrapping!
-      flex-direction: row-reverse
-      justify-content: flex-start
-      align-items: flex-start
-      gap: 0px  // optional spacing between cards
-      padding: 0px
 
       .hosted
         &:nth-child(0)
@@ -2641,6 +2634,51 @@ align-radio
             .counters
               transform(rotate(-90deg))
 
+@css {
+  @-moz-document url-prefix() {
+    .challenger-rig,
+    .challenger-rig.opponent {
+      direction: rtl;
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+}
+
+@css {
+  @-moz-document url-prefix() {
+    .contestant-rig,
+    .contestant-rig.opponent {
+      direction: rtl;
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+}
+
+@css {
+  @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+    .challenger-rig,
+    .challenger-rig.opponent {
+      direction: rtl;
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+}
+
+@css {
+  @media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+    .contestant-rig,
+    .contestant-rig.opponent {
+      direction: rtl;
+      display: flex;
+      flex-wrap: wrap;
+
+    }
+  }
+}
+
   .centralpane .board-top {
     border: 1px solid transparent
     margin-bottom: auto
@@ -2649,33 +2687,6 @@ align-radio
     z-index: 6
     position: relative
     }
-
-@-moz-document url-prefix() {
-  .centralpane .resource-top {
-    display: flex
-    flex-wrap: wrap
-    direction: rtl
-    transform: translateY(-50px)
-  }
-}
-@-moz-document url-prefix() {
-  .centralpane .hazard-top {
-    display: flex
-    flex-wrap: wrap
-    direction: rtl
-    transform: translateY(-50px)
-  }
-}
-@-moz-document url-prefix() {
-  .centralpane .hazard-bottom {
-    transform: translateY(-50px)
-  }
-}
-@-moz-document url-prefix() {
-  .centralpane .resource-bottom {
-    transform: translateY(-50px)
-  }
-}
 
   .centralpane .resource-top {
     border: 1px solid transparent
