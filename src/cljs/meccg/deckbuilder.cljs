@@ -893,7 +893,7 @@
              [:button {:on-click #(new-deck "Dragon-lord" owner)} "New Dragon deck"]
              ]
             [:div
-             [:label [:input {:type "checkbox"
+             [:label "Hero" [:input {:type "checkbox"
                               :value true
                               :checked (om/get-state owner :wizard)
                               :on-change #(do
@@ -901,8 +901,8 @@
                                             (if (om/get-state owner :by-date)
                                               (org-decks-date decks owner)
                                               (org-decks-name decks owner))
-                                            )}] "Hero "]
-             [:label [:input {:type "checkbox"
+                                            )}]]
+             [:label "Minion" [:input {:type "checkbox"
                               :value true
                               :checked (om/get-state owner :minion)
                               :on-change #(do
@@ -910,8 +910,8 @@
                                             (if (om/get-state owner :by-date)
                                               (org-decks-date decks owner)
                                               (org-decks-name decks owner))
-                                            )}] "Minion "]
-             [:label [:input {:type "checkbox"
+                                            )}]]
+             [:label "FW" [:input {:type "checkbox"
                               :value true
                               :checked (om/get-state owner :fallen)
                               :on-change #(do
@@ -919,8 +919,8 @@
                                             (if (om/get-state owner :by-date)
                                               (org-decks-date decks owner)
                                               (org-decks-name decks owner))
-                                            )}] "FW "]
-             [:label [:input {:type "checkbox"
+                                            )}]]
+             [:label "BA" [:input {:type "checkbox"
                               :value true
                               :checked (om/get-state owner :balrog)
                               :on-change #(do
@@ -928,8 +928,8 @@
                                             (if (om/get-state owner :by-date)
                                               (org-decks-date decks owner)
                                               (org-decks-name decks owner))
-                                            )}] "BA "]
-             [:label [:input {:type "checkbox"
+                                            )}]]
+             [:label "EL" [:input {:type "checkbox"
                               :value true
                               :checked (om/get-state owner :el)
                               :on-change #(do
@@ -937,8 +937,8 @@
                                             (if (om/get-state owner :by-date)
                                               (org-decks-date decks owner)
                                               (org-decks-name decks owner))
-                                            )}] "EL "]
-             [:label [:input {:type "checkbox"
+                                            )}]]
+             [:label "DL" [:input {:type "checkbox"
                               :value true
                               :checked (om/get-state owner :dl)
                               :on-change #(do
@@ -946,8 +946,8 @@
                                             (if (om/get-state owner :by-date)
                                               (org-decks-date decks owner)
                                               (org-decks-name decks owner))
-                                            )}] "DL "]
-             [:label [:input {:type "checkbox"
+                                            )}]]
+             [:label "AL" [:input {:type "checkbox"
                               :value true
                               :checked (om/get-state owner :al)
                               :on-change #(do
@@ -955,8 +955,8 @@
                                             (if (om/get-state owner :by-date)
                                               (org-decks-date decks owner)
                                               (org-decks-name decks owner))
-                                            )}] "AL "]
-             [:label [:input {:type "checkbox"
+                                            )}]]
+             [:label "WL" [:input {:type "checkbox"
                               :value true
                               :checked (om/get-state owner :wl)
                               :on-change #(do
@@ -964,8 +964,8 @@
                                             (if (om/get-state owner :by-date)
                                               (org-decks-date decks owner)
                                               (org-decks-name decks owner))
-                                            )}] "WL "]
-             [:label [:input {:type "checkbox"
+                                            )}]]
+             [:label "Dragon" [:input {:type "checkbox"
                               :value true
                               :checked (om/get-state owner :dragon)
                               :on-change #(do
@@ -973,8 +973,8 @@
                                             (if (om/get-state owner :by-date)
                                               (org-decks-date decks owner)
                                               (org-decks-name decks owner))
-                                            )}] "Dragon "]
-             [:label [:input {:type "checkbox"
+                                            )}]]
+             [:label "Date" [:input {:type "checkbox"
                               :value true
                               :checked (om/get-state owner :by-date)
                               :on-change #(do
@@ -982,7 +982,7 @@
                                             (if (om/get-state owner :by-date)
                                               (org-decks-date decks owner)
                                               (org-decks-name decks owner))
-                                            )}] "Date"]]
+                                            )}]]]
 
             [:div.deck-collection
              (when-not (:edit state)
