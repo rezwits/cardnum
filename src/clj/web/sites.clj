@@ -757,6 +757,7 @@
   {:qty 1 :card "Barrow-downs" :id "[H] (TW)"}
   {:qty 1 :card "Baruzimabûl" :id "[H] (DS)"}
   {:qty 1 :card "Bâtan-Urîd" :id "[H] (SL)"}
+  {:qty 1 :card "Beldwin" :id "[H] (TI)"}
   {:qty 1 :card "Benish Armon" :id "[H] (WR)"}
   {:qty 1 :card "Beorn's House" :id "[H] (TW)"}
   {:qty 1 :card "Bernastath" :id "[H] (NW)"}
@@ -1144,6 +1145,7 @@
   {:qty 1 :card "Barak-shathûr" :id "[M] (DF)"}
   {:qty 1 :card "Barrow-downs" :id "[M] (LE)"}
   {:qty 1 :card "Baruzimabûl" :id "[M] (DS)"}
+  {:qty 1 :card "Beldwin" :id "[M] (TI)"}
   {:qty 1 :card "Benish Armon" :id "[M] (WR)"}
   {:qty 1 :card "Beorn's House" :id "[M] (LE)"}
   {:qty 1 :card "Bernastath" :id "[M] (NW)"}
@@ -1456,6 +1458,7 @@
   {:qty 1 :card "Barrow-downs" :id "[M] (LE)"}
   {:qty 1 :card "Baruzimabûl" :id "[M] (DS)"}
   {:qty 1 :card "Bâtan-Urîd" :id "[M] (SL)"}
+  {:qty 1 :card "Beldwin" :id "[M] (TI)"}
   {:qty 1 :card "Benish Armon" :id "[M] (WR)"}
   {:qty 1 :card "Beorn's House" :id "[M] (LE)"}
   {:qty 1 :card "Bernastath" :id "[M] (NW)"}
