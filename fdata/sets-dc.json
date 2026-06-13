@@ -109,7 +109,7 @@
    "name": "Return of the Shadow",
    "position": 14,
    "dreamcards": true,
-   "released": false
+   "released": true
  },
  {
    "code": "METI",
@@ -117,7 +117,7 @@
    "name": "Treason of Isengard",
    "position": 15,
    "dreamcards": true,
-   "released": false
+   "released": true
  },
  {
    "code": "MEWR",
